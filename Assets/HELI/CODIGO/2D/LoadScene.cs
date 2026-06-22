@@ -20,6 +20,12 @@ public class LoadScene : MonoBehaviour
 
     private void CargarEscena()
     {
+        DispararCargaEscenaPublica();
+    }
+
+    // MÉTODOS PÚBLICO: Permite que el Menu3DManager ejecute la lógica al llegar al 95% del fade blanco
+    public void DispararCargaEscenaPublica()
+    {
         if (string.IsNullOrEmpty(nombreEscena))
         {
             Debug.LogWarning("LoadScene: no hay ninguna escena asignada.");
