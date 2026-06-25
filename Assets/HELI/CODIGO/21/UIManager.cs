@@ -57,8 +57,9 @@ public class UIManager : MonoBehaviour
     private IEnumerator SeleccionarHit()
     {
         yield return null;
-        if (EventSystem.current != null)
-            EventSystem.current.SetSelectedGameObject(botonHit);
+        if (EventSystem.current == null) yield break;
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(botonHit);
     }
 
     // ─────────────────────────────────────────

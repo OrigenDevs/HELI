@@ -28,7 +28,8 @@ public class BotonManager : MonoBehaviour
     private System.Collections.IEnumerator SeleccionarPrimerBoton()
     {
         yield return null;
-        if (EventSystem.current != null && botones[0] != null)
+        if (EventSystem.current == null || botones[0] == null) yield break;
+        if (botones[0].gameObject.activeInHierarchy)
             EventSystem.current.SetSelectedGameObject(botones[0].gameObject);
     }
 
