@@ -23,8 +23,10 @@ public class CardDisplay : MonoBehaviour
     {
         if (materialCarta == null || textura == null) return;
 
-        materialCarta.mainTexture = textura;                        // Albedo / color map
-        materialCarta.SetTexture("_EmissionMap", textura);         // Emisivo
+        materialCarta.mainTexture = textura;
+        materialCarta.SetTexture("_BaseMap", textura);
+        materialCarta.SetTexture("_MainTexture", textura);
+        materialCarta.SetTexture("_EmissionMap", textura);
         materialCarta.EnableKeyword("_EMISSION");
     }
 

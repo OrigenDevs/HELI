@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class UIManager : MonoBehaviour
@@ -48,6 +49,9 @@ public class UIManager : MonoBehaviour
     {
         botonHit.SetActive(estado);
         botonStand.SetActive(estado);
+
+        if (estado && EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(botonHit);
     }
 
     // ─────────────────────────────────────────
