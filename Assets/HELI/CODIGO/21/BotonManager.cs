@@ -12,11 +12,29 @@ public class BotonManager : MonoBehaviour
 
     private Vector3[] escalasOriginales;
     private Color[] coloresOriginales;
+    private bool inicializado = false;
+
+    void OnEnable()
+    {
+        if (!inicializado || botones == null || botones.Length == 0) return;
+        StartCoroutine(SeleccionarPrimerBoton());
+    }
+
+    private System.Collections.IEnumerator SeleccionarPrimerBoton()
+    {
+        yield return null;
+        if (EventSystem.current != null && botones[0] != null)
+            EventSystem.current.SetSelectedGameObject(botones[0].gameObject);
+    }
 
     void Start()
     {
         if (botones == null || botones.Length == 0) return;
+        Inicializar();
+    }
 
+    private void Inicializar()
+    {
         escalasOriginales = new Vector3[botones.Length];
         coloresOriginales = new Color[botones.Length];
 
@@ -28,6 +46,7 @@ public class BotonManager : MonoBehaviour
             coloresOriginales[i] = botones[i].colors.normalColor;
 
             var trigger = botones[i].gameObject.AddComponent<EventTrigger>();
+            trigger.triggers.Clear();
 
             var selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
@@ -40,10 +59,14 @@ public class BotonManager : MonoBehaviour
             deselectEntry.callback.AddListener((data) => OnDeseleccionado(idx));
             trigger.triggers.Add(deselectEntry);
         }
+
+        inicializado = true;
     }
 
     private void OnSeleccionado(int index)
     {
+        if (index < 0 || index >= botones.Length) return;
+
         for (int i = 0; i < botones.Length; i++)
         {
             if (botones[i] == null) continue;
@@ -67,7 +90,11 @@ public class BotonManager : MonoBehaviour
 
     private void OnDeseleccionado(int index)
     {
-        if (botones[index] == null) return;
+        if (index < 0 || index >= botones.Length || botones[index] == null) return;
+
         botones[index].transform.localScale = escalasOriginales[index];
+        var colors = botones[index].colors;
+        colors.normalColor = coloresOriginales[index];
+        botones[index].colors = colors;
     }
 }
