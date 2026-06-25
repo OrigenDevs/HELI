@@ -50,7 +50,14 @@ public class UIManager : MonoBehaviour
         botonHit.SetActive(estado);
         botonStand.SetActive(estado);
 
-        if (estado && EventSystem.current != null)
+        if (estado)
+            StartCoroutine(SeleccionarHit());
+    }
+
+    private IEnumerator SeleccionarHit()
+    {
+        yield return null;
+        if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(botonHit);
     }
 

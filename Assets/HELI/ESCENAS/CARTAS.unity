@@ -6308,14 +6308,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.659194, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.72910583, g: 1, b: 0.20599997, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: af9e32818431bfc40ae72add82f246da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ef0e2317cc877eb438c63f84e81003f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6584,14 +6584,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33333337, g: 1, b: 0.9450776, a: 1}
+  m_Color: {r: 0.48900002, g: 1, b: 0.9579177, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: af9e32818431bfc40ae72add82f246da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ef0e2317cc877eb438c63f84e81003f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7800,6 +7800,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 950890136}
+  - component: {fileID: 950890137}
   m_Layer: 5
   m_Name: Menu_turno_jugador
   m_TagString: Untagged
@@ -7828,6 +7829,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.0005722}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &950890137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950890135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73cd4bfe49b7dd748a191cc751a42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotonManager
+  botones:
+  - {fileID: 555293119}
+  - {fileID: 1930161137}
+  escalaSeleccionado: 1.15
 --- !u!1 &959402865 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 79d643272a2e047499d8b067db517fec, type: 3}
@@ -11684,6 +11701,7 @@ GameObject:
   - component: {fileID: 1332535722}
   - component: {fileID: 1332535724}
   - component: {fileID: 1332535723}
+  - component: {fileID: 1332535725}
   m_Layer: 5
   m_Name: Victoria
   m_TagString: Untagged
@@ -11905,6 +11923,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1332535725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332535721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73cd4bfe49b7dd748a191cc751a42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotonManager
+  botones:
+  - {fileID: 1973082950}
+  - {fileID: 763386491}
+  escalaSeleccionado: 1.15
 --- !u!1 &1346595565 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 79d643272a2e047499d8b067db517fec, type: 3}
@@ -17720,14 +17754,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33333337, g: 1, b: 0.9450776, a: 1}
+  m_Color: {r: 0.44, g: 1, b: 0.9538824, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: af9e32818431bfc40ae72add82f246da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ef0e2317cc877eb438c63f84e81003f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18245,14 +18279,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.659194, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.6949882, g: 1, b: 0.106000006, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: af9e32818431bfc40ae72add82f246da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ef0e2317cc877eb438c63f84e81003f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18596,6 +18630,7 @@ GameObject:
   - component: {fileID: 2061605270}
   - component: {fileID: 2061605272}
   - component: {fileID: 2061605271}
+  - component: {fileID: 2061605273}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -18663,6 +18698,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2061605269}
   m_CullTransparentMesh: 1
+--- !u!114 &2061605273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061605269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73cd4bfe49b7dd748a191cc751a42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotonManager
+  botones:
+  - {fileID: 788465069}
+  - {fileID: 1996876061}
+  escalaSeleccionado: 1.15
 --- !u!1 &2094115961 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 79d643272a2e047499d8b067db517fec, type: 3}
