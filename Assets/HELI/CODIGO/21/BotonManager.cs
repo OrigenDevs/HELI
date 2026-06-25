@@ -14,6 +14,11 @@ public class BotonManager : MonoBehaviour
     private Color[] coloresOriginales;
     private bool inicializado = false;
 
+    void Awake()
+    {
+        Inicializar();
+    }
+
     void OnEnable()
     {
         if (!inicializado || botones == null || botones.Length == 0) return;
@@ -25,12 +30,6 @@ public class BotonManager : MonoBehaviour
         yield return null;
         if (EventSystem.current != null && botones[0] != null)
             EventSystem.current.SetSelectedGameObject(botones[0].gameObject);
-    }
-
-    void Start()
-    {
-        if (botones == null || botones.Length == 0) return;
-        Inicializar();
     }
 
     private void Inicializar()
