@@ -6,13 +6,16 @@ public class Parallax2D : MonoBehaviour
     public class Capa
     {
         public Transform transform;
-        [Range(0f, 1f)]
-        [Tooltip("0 = no se mueve (fondo fijo), 1 = se mueve igual que el personaje")]
+        [Tooltip("0 = no se mueve, 1 = igual que el personaje, >1 = más rápido que el personaje")]
         public float factor = 0.5f;
     }
 
-    [Header("Referencia al personaje (en vez de la cámara, evita temblores)")]
+    [Header("Referencia al personaje")]
     public Transform personaje;
+
+    [Header("Intensidad global")]
+    [Tooltip("Multiplica el efecto parallax. 2 = el doble de movimiento en todas las capas")]
+    public float intensidad = 2f;
 
     [Header("Eje de movimiento")]
     public bool ejeX = true;
@@ -30,7 +33,7 @@ public class Parallax2D : MonoBehaviour
         if (personaje == null)
         {
             var tracker = FindAnyObjectByType<RunnerCameraTracker>();
-            if (tracker != null) personaje = tracker.personaje.transform;
+            if (tracker != null) personaje = tracker.personaje?.transform;
         }
 
         if (personaje == null) return;
@@ -57,7 +60,7 @@ public class Parallax2D : MonoBehaviour
         for (int i = 0; i < capas.Length; i++)
         {
             if (capas[i].transform == null) continue;
-            capas[i].transform.position = posicionesIniciales[i] + delta * capas[i].factor;
+            capas[i].transform.position = posicionesIniciales[i] + delta * capas[i].factor * intensidad;
         }
     }
 }
