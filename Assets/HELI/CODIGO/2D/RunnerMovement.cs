@@ -37,6 +37,12 @@ public class RunnerMovement : MonoBehaviour
     [Tooltip("Carril máximo (positivo = derecha)")]
     public int carrilMax = 1;
 
+    [Tooltip("Altura que sube/baja por cada carril. Ej: 2 = cada carril está 2 unidades más arriba")]
+    public float alturaPorCarril = 0f;
+
+    [Tooltip("Velocidad de subida/bajada entre carriles")]
+    public float velocidadAltura = 5f;
+
     [Header("Detección de suelo")]
     [SerializeField] private float distanciaAlSuelo = 1.1f;
 
@@ -49,6 +55,7 @@ public class RunnerMovement : MonoBehaviour
     private int carrilActual;
     private float posicionObjetivoCarril;
     private float posicionBaseCarril;
+    private float posicionYBase;
 
     void Awake()
     {
@@ -63,6 +70,7 @@ public class RunnerMovement : MonoBehaviour
         carrilActual = carrilInicial;
         posicionBaseCarril = (ejeCarril == EjeCarril.X) ? transform.position.x : transform.position.z;
         posicionObjetivoCarril = posicionBaseCarril + carrilActual * anchoCarril;
+        posicionYBase = transform.position.y;
     }
 
     void Update()
@@ -106,6 +114,11 @@ public class RunnerMovement : MonoBehaviour
 
         if (ejeCarril == EjeCarril.X) v.x = velCarril;
         else v.z = velCarril;
+
+        float objetivoY = posicionYBase + carrilActual * alturaPorCarril;
+        float diffY = objetivoY - rb.position.y;
+        if (Mathf.Abs(diffY) > 0.05f)
+            v.y = Mathf.Sign(diffY) * velocidadAltura;
 
         rb.linearVelocity = v;
     }
