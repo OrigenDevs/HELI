@@ -115,7 +115,7 @@ public class RunnerMovement : MonoBehaviour
             Vector3 pos = rb.position;
             pos.y = Mathf.Lerp(inicioTransicion.y, destino.altura, suavizado);
             pos.z = Mathf.Lerp(inicioTransicion.z, destino.profundidad, suavizado);
-            rb.MovePosition(pos);
+            rb.position = pos;
 
             if (progresionTransicion >= 1f)
                 progresionTransicion = -1f;
