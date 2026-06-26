@@ -41,9 +41,11 @@ public class RunnerMovement : MonoBehaviour
     private bool estaEnSuelo = false;
     private bool estaVivo = true;
 
+    private enum EjeCarril { X, Z }
+    private EjeCarril ejeCarril;
     private int carrilActual;
-    private float posicionXObjetivo;
-    private float posicionXBase;
+    private float posicionObjetivoCarril;
+    private float posicionBaseCarril;
 
     void Awake()
     {
@@ -55,9 +57,12 @@ public class RunnerMovement : MonoBehaviour
                        | RigidbodyConstraints.FreezeRotationY
                        | RigidbodyConstraints.FreezeRotationZ;
 
+        if (eje == EjeMovimiento.X) ejeCarril = EjeCarril.Z;
+        else ejeCarril = EjeCarril.X;
+
         carrilActual = carrilInicial;
-        posicionXBase = transform.position.x;
-        posicionXObjetivo = posicionXBase + carrilActual * anchoCarril;
+        posicionBaseCarril = (ejeCarril == EjeCarril.X) ? transform.position.x : transform.position.z;
+        posicionObjetivoCarril = posicionBaseCarril + carrilActual * anchoCarril;
     }
 
     void Update()
@@ -95,12 +100,12 @@ public class RunnerMovement : MonoBehaviour
             case EjeMovimiento.Z: v.z = velocidad * dir; break;
         }
 
-        // Deslizar hacia el carril objetivo en el eje horizontal no usado
-        float diff = posicionXObjetivo - rb.position.x;
-        if (Mathf.Abs(diff) > 0.02f)
-            v.x = Mathf.Sign(diff) * velocidadCambioCarril;
-        else
-            v.x = 0f;
+        float posActual = (ejeCarril == EjeCarril.X) ? rb.position.x : rb.position.z;
+        float diff = posicionObjetivoCarril - posActual;
+        float velCarril = (Mathf.Abs(diff) > 0.02f) ? Mathf.Sign(diff) * velocidadCambioCarril : 0f;
+
+        if (ejeCarril == EjeCarril.X) v.x = velCarril;
+        else v.z = velCarril;
 
         rb.linearVelocity = v;
     }
@@ -109,7 +114,7 @@ public class RunnerMovement : MonoBehaviour
     {
         if (!estaEnSuelo) return;
         carrilActual = Mathf.Clamp(carrilActual + direccionCarril, carrilMin, carrilMax);
-        posicionXObjetivo = posicionXBase + carrilActual * anchoCarril;
+        posicionObjetivoCarril = posicionBaseCarril + carrilActual * anchoCarril;
     }
 
     public void IntentarSaltar()
