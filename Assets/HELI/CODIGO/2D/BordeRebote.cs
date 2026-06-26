@@ -4,21 +4,33 @@ public class BordeRebote : MonoBehaviour
 {
     [Range(0f, 1f)]
     public float rebote = 0.4f;
+    public float fuerzaRebote = 5f;
+
+    private Rigidbody rb;
 
     void Awake()
     {
-        PhysicMaterial material = new PhysicMaterial("BordeRebote");
-        material.dynamicFriction = 0f;
-        material.staticFriction = 0f;
-        material.bounciness = rebote;
-        material.frictionCombine = PhysicMaterialCombine.Minimum;
-        material.bounceCombine = PhysicMaterialCombine.Maximum;
+        rb = GetComponent<Rigidbody>();
+    }
 
-        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("suelo"))
+    void OnCollisionStay(Collision collision)
+    {
+        if (!collision.collider.CompareTag("suelo")) return;
+
+        foreach (ContactPoint contacto in collision.contacts)
         {
-            Collider col = obj.GetComponent<Collider>();
-            if (col != null)
-                col.material = material;
+            if (contacto.normal.y < 0.5f)
+            {
+                Vector3 dirRebote = contacto.normal;
+                dirRebote.y = 0f;
+                dirRebote.Normalize();
+
+                Vector3 v = rb.linearVelocity;
+                if (Vector3.Dot(dirRebote, v.normalized) < 0.5f)
+                    v += dirRebote * fuerzaRebote * rebote;
+                rb.linearVelocity = v;
+                return;
+            }
         }
     }
 }
