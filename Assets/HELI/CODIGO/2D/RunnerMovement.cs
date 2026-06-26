@@ -26,6 +26,12 @@ public class RunnerMovement : MonoBehaviour
     [Tooltip("Carril inicial (0 = centro)")]
     public int carrilInicial = 0;
 
+    [Tooltip("Carril mínimo (negativo = izquierda)")]
+    public int carrilMin = -1;
+
+    [Tooltip("Carril máximo (positivo = derecha)")]
+    public int carrilMax = 1;
+
     [Header("Detección de suelo")]
     [SerializeField] private float distanciaAlSuelo = 1.1f;
 
@@ -102,7 +108,7 @@ public class RunnerMovement : MonoBehaviour
     private void CambiarCarril(int direccionCarril)
     {
         if (!estaEnSuelo) return;
-        carrilActual += direccionCarril;
+        carrilActual = Mathf.Clamp(carrilActual + direccionCarril, carrilMin, carrilMax);
         posicionXObjetivo = posicionXBase + carrilActual * anchoCarril;
     }
 
