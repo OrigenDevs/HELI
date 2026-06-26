@@ -115,12 +115,15 @@ public class RunnerMovement : MonoBehaviour
         if (ejeCarril == EjeCarril.X) v.x = velCarril;
         else v.z = velCarril;
 
+        rb.linearVelocity = v;
+
         float objetivoY = posicionYBase + carrilActual * alturaPorCarril;
         float diffY = objetivoY - rb.position.y;
-        if (Mathf.Abs(diffY) > 0.05f)
-            v.y = Mathf.Sign(diffY) * velocidadAltura;
-
-        rb.linearVelocity = v;
+        if (Mathf.Abs(diffY) > 0.02f && estaEnSuelo)
+        {
+            float nuevaY = Mathf.MoveTowards(rb.position.y, objetivoY, velocidadAltura * Time.fixedDeltaTime);
+            rb.MovePosition(new Vector3(rb.position.x, nuevaY, rb.position.z));
+        }
     }
 
     private void CambiarCarril(int direccionCarril)
