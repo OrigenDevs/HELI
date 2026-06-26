@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
@@ -39,7 +40,7 @@ public class RunnerMovement : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     private JumpController jumpController;
-    private InputManager inputManager;
+    private PlayerInputActions actions;
     private bool estaEnSuelo = false;
     private bool estaVivo = true;
 
@@ -52,13 +53,49 @@ public class RunnerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         jumpController = GetComponent<JumpController>();
-        inputManager = InputManager.Instance;
 
         rb.constraints = RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationY
                        | RigidbodyConstraints.FreezeRotationZ;
 
         carrilActual = Mathf.Clamp(carrilInicial, 0, carriles.Length - 1);
+    }
+
+    void OnEnable()
+    {
+        actions = new PlayerInputActions();
+        actions.Player.Enable();
+
+        actions.Player.Move.performed += OnMove;
+        actions.Player.Move.canceled += OnMoveCancel;
+        actions.Player.Jump.performed += OnJump;
+    }
+
+    void OnDisable()
+    {
+        actions.Player.Move.performed -= OnMove;
+        actions.Player.Move.canceled -= OnMoveCancel;
+        actions.Player.Jump.performed -= OnJump;
+        actions.Player.Disable();
+        actions.Dispose();
+    }
+
+    private void OnMove(InputAction.CallbackContext ctx)
+    {
+        if (!estaVivo) return;
+        direccionInputAnterior = ctx.ReadValue<Vector2>().x;
+    }
+
+    private void OnMoveCancel(InputAction.CallbackContext ctx)
+    {
+        direccionInputAnterior = 0f;
+    }
+
+    private void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (!estaVivo) return;
+        if (estaEnSuelo)
+            IntentarSaltar();
     }
 
     void Update()
@@ -68,23 +105,13 @@ public class RunnerMovement : MonoBehaviour
         VerificarSuelo();
         ManejarAnimaciones();
 
-        if (inputManager == null) return;
-
-        PlayerInputData input = inputManager.CurrentInput;
-
-        if (input.jumpPressed)
-            IntentarSaltar();
-
         if (!transicionando && estaEnSuelo)
         {
-            float movX = input.movement.x;
-            if (Mathf.Abs(movX) > 0.5f && Mathf.Abs(direccionInputAnterior) <= 0.5f)
-                CambiarCarril((int)Mathf.Sign(movX));
-            direccionInputAnterior = movX;
-        }
-        else
-        {
-            direccionInputAnterior = 0f;
+            if (Mathf.Abs(direccionInputAnterior) > 0.5f)
+            {
+                CambiarCarril((int)Mathf.Sign(direccionInputAnterior));
+                direccionInputAnterior = 0f;
+            }
         }
     }
 
