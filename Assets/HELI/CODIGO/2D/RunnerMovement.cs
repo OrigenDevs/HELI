@@ -37,6 +37,10 @@ public class RunnerMovement : MonoBehaviour
     [Header("Detección de suelo")]
     [SerializeField] private float distanciaAlSuelo = 1.1f;
 
+    [Header("Coyote Time")]
+    [Tooltip("Tiempo en segundos después de salir de un borde donde aún se puede saltar")]
+    public float tiempoCoyote = 0.1f;
+
     private Rigidbody rb;
     private Animator animator;
     private JumpController jumpController;
@@ -47,6 +51,7 @@ public class RunnerMovement : MonoBehaviour
     private int carrilActual;
     private bool transicionando = false;
     private float direccionInputAnterior = 0f;
+    private float ultimoTiempoEnSuelo;
 
     void Awake()
     {
@@ -94,8 +99,11 @@ public class RunnerMovement : MonoBehaviour
     private void OnJump(InputAction.CallbackContext ctx)
     {
         if (!estaVivo) return;
-        if (estaEnSuelo)
+        if (estaEnSuelo || Time.time - ultimoTiempoEnSuelo <= tiempoCoyote)
+        {
             IntentarSaltar();
+            ultimoTiempoEnSuelo = -tiempoCoyote;
+        }
     }
 
     void Update()
@@ -189,6 +197,9 @@ public class RunnerMovement : MonoBehaviour
             estaEnSuelo = hit.collider.CompareTag("suelo");
         else
             estaEnSuelo = false;
+
+        if (estaEnSuelo)
+            ultimoTiempoEnSuelo = Time.time;
 
         if (!anterior && estaEnSuelo)
             jumpController.AlTocarSuelo();
