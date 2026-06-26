@@ -16,7 +16,12 @@ public class RunnerMovement : MonoBehaviour
     [Tooltip("Dirección: 1 = positivo, -1 = negativo")]
     public float direccion = 1f;
 
+    public enum EjeCarril { X, Z }
+
     [Header("Carriles")]
+    [Tooltip("Eje por el que se cambia de carril")]
+    public EjeCarril ejeCarril = EjeCarril.Z;
+
     [Tooltip("Separación entre carriles")]
     public float anchoCarril = 2f;
 
@@ -41,8 +46,6 @@ public class RunnerMovement : MonoBehaviour
     private bool estaEnSuelo = false;
     private bool estaVivo = true;
 
-    private enum EjeCarril { X, Z }
-    private EjeCarril ejeCarril;
     private int carrilActual;
     private float posicionObjetivoCarril;
     private float posicionBaseCarril;
@@ -56,9 +59,6 @@ public class RunnerMovement : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationY
                        | RigidbodyConstraints.FreezeRotationZ;
-
-        if (eje == EjeMovimiento.X) ejeCarril = EjeCarril.Z;
-        else ejeCarril = EjeCarril.X;
 
         carrilActual = carrilInicial;
         posicionBaseCarril = (ejeCarril == EjeCarril.X) ? transform.position.x : transform.position.z;
