@@ -6,6 +6,15 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(JumpController))]
 public class RunnerMovement : MonoBehaviour
 {
+    [System.Serializable]
+    public class Carril
+    {
+        [Tooltip("Altura (Y) de este carril")]
+        public float altura;
+        [Tooltip("Profundidad (Z) de este carril")]
+        public float profundidad;
+    }
+
     [Header("Movimiento adelante")]
     public float velocidad = 8f;
 
@@ -16,32 +25,14 @@ public class RunnerMovement : MonoBehaviour
     [Tooltip("Dirección: 1 = positivo, -1 = negativo")]
     public float direccion = 1f;
 
-    public enum EjeCarril { X, Z }
-
     [Header("Carriles")]
-    [Tooltip("Eje por el que se cambia de carril")]
-    public EjeCarril ejeCarril = EjeCarril.Z;
+    public Carril[] carriles;
 
-    [Tooltip("Separación entre carriles")]
-    public float anchoCarril = 2f;
-
-    [Tooltip("Velocidad de deslizamiento entre carriles")]
-    public float velocidadCambioCarril = 10f;
-
-    [Tooltip("Carril inicial (0 = centro)")]
+    [Tooltip("Índice del carril inicial")]
     public int carrilInicial = 0;
 
-    [Tooltip("Carril mínimo (negativo = izquierda)")]
-    public int carrilMin = -1;
-
-    [Tooltip("Carril máximo (positivo = derecha)")]
-    public int carrilMax = 1;
-
-    [Tooltip("Altura que sube/baja por cada carril. Ej: 2 = cada carril está 2 unidades más arriba")]
-    public float alturaPorCarril = 0f;
-
-    [Tooltip("Velocidad de subida/bajada entre carriles")]
-    public float velocidadAltura = 5f;
+    [Tooltip("Duración de la transición entre carriles (segundos)")]
+    public float duracionTransicion = 0.15f;
 
     [Header("Detección de suelo")]
     [SerializeField] private float distanciaAlSuelo = 1.1f;
@@ -53,9 +44,7 @@ public class RunnerMovement : MonoBehaviour
     private bool estaVivo = true;
 
     private int carrilActual;
-    private float posicionObjetivoCarril;
-    private float posicionBaseCarril;
-    private float posicionYBase;
+    private bool transicionando = false;
 
     void Awake()
     {
@@ -67,10 +56,7 @@ public class RunnerMovement : MonoBehaviour
                        | RigidbodyConstraints.FreezeRotationY
                        | RigidbodyConstraints.FreezeRotationZ;
 
-        carrilActual = carrilInicial;
-        posicionBaseCarril = (ejeCarril == EjeCarril.X) ? transform.position.x : transform.position.z;
-        posicionObjetivoCarril = posicionBaseCarril + carrilActual * anchoCarril;
-        posicionYBase = transform.position.y;
+        carrilActual = Mathf.Clamp(carrilInicial, 0, carriles.Length - 1);
     }
 
     void Update()
@@ -86,17 +72,20 @@ public class RunnerMovement : MonoBehaviour
             if (kb.spaceKey.wasPressedThisFrame)
                 IntentarSaltar();
 
-            if (kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame)
-                CambiarCarril(-1);
+            if (!transicionando && estaEnSuelo)
+            {
+                if (kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame)
+                    CambiarCarril(-1);
 
-            if (kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame)
-                CambiarCarril(1);
+                if (kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame)
+                    CambiarCarril(1);
+            }
         }
     }
 
     void FixedUpdate()
     {
-        if (!estaVivo) return;
+        if (!estaVivo || transicionando) return;
 
         float dir = Mathf.Sign(direccion);
         Vector3 v = rb.linearVelocity;
@@ -108,29 +97,43 @@ public class RunnerMovement : MonoBehaviour
             case EjeMovimiento.Z: v.z = velocidad * dir; break;
         }
 
-        float posActual = (ejeCarril == EjeCarril.X) ? rb.position.x : rb.position.z;
-        float diff = posicionObjetivoCarril - posActual;
-        float velCarril = (Mathf.Abs(diff) > 0.02f) ? Mathf.Sign(diff) * velocidadCambioCarril : 0f;
-
-        if (ejeCarril == EjeCarril.X) v.x = velCarril;
-        else v.z = velCarril;
-
         rb.linearVelocity = v;
-
-        float objetivoY = posicionYBase + carrilActual * alturaPorCarril;
-        float diffY = objetivoY - rb.position.y;
-        if (Mathf.Abs(diffY) > 0.02f && estaEnSuelo)
-        {
-            float nuevaY = Mathf.MoveTowards(rb.position.y, objetivoY, velocidadAltura * Time.fixedDeltaTime);
-            rb.MovePosition(new Vector3(rb.position.x, nuevaY, rb.position.z));
-        }
     }
 
     private void CambiarCarril(int direccionCarril)
     {
-        if (!estaEnSuelo) return;
-        carrilActual = Mathf.Clamp(carrilActual + direccionCarril, carrilMin, carrilMax);
-        posicionObjetivoCarril = posicionBaseCarril + carrilActual * anchoCarril;
+        int nuevoIndice = Mathf.Clamp(carrilActual + direccionCarril, 0, carriles.Length - 1);
+        if (nuevoIndice == carrilActual) return;
+        carrilActual = nuevoIndice;
+        StartCoroutine(TransicionarACarril());
+    }
+
+    private System.Collections.IEnumerator TransicionarACarril()
+    {
+        transicionando = true;
+        Carril destino = carriles[carrilActual];
+
+        Vector3 inicio = rb.position;
+        Vector3 objetivo = new Vector3(inicio.x, destino.altura, destino.profundidad);
+
+        float t = 0;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duracionTransicion;
+            float suavizado = t * t * (3f - 2f * t);
+
+            Vector3 pos = Vector3.Lerp(inicio, objetivo, suavizado);
+            pos.x = rb.position.x;
+
+            rb.MovePosition(pos);
+            yield return null;
+        }
+
+        Vector3 final = objetivo;
+        final.x = rb.position.x;
+        rb.MovePosition(final);
+
+        transicionando = false;
     }
 
     public void IntentarSaltar()
@@ -165,8 +168,10 @@ public class RunnerMovement : MonoBehaviour
         rb.isKinematic = true;
         animator.SetBool("correr", false);
         animator.SetBool("volar", false);
+        StopAllCoroutines();
+        transicionando = false;
     }
 
     public bool EstaEnSuelo() => estaEnSuelo;
-    public bool EstaVivo()    => estaVivo;
+    public bool EstaVivo() => estaVivo;
 }
