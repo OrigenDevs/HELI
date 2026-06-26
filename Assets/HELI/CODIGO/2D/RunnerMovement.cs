@@ -87,8 +87,8 @@ public class RunnerMovement : MonoBehaviour
     {
         if (!estaVivo) return;
 
+        Vector3 v = Vector3.zero;
         float dir = Mathf.Sign(direccion);
-        Vector3 v = rb.linearVelocity;
 
         switch (eje)
         {
@@ -97,12 +97,9 @@ public class RunnerMovement : MonoBehaviour
             case EjeMovimiento.Z: v.z = velocidad * dir; break;
         }
 
-        if (transicionando)
-        {
-            if (eje != EjeMovimiento.X) v.x = 0;
-            if (eje != EjeMovimiento.Y) v.y = 0;
-            if (eje != EjeMovimiento.Z) v.z = 0;
-        }
+        // Preservar el eje Y para que JumpController funcione
+        if (eje != EjeMovimiento.Y)
+            v.y = rb.linearVelocity.y;
 
         rb.linearVelocity = v;
     }
