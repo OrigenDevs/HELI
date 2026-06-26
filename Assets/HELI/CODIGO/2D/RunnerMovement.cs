@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
@@ -40,17 +39,20 @@ public class RunnerMovement : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     private JumpController jumpController;
+    private InputManager inputManager;
     private bool estaEnSuelo = false;
     private bool estaVivo = true;
 
     private int carrilActual;
     private bool transicionando = false;
+    private float direccionInputAnterior = 0f;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         jumpController = GetComponent<JumpController>();
+        inputManager = InputManager.Instance;
 
         rb.constraints = RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationY
@@ -66,20 +68,23 @@ public class RunnerMovement : MonoBehaviour
         VerificarSuelo();
         ManejarAnimaciones();
 
-        var kb = InputSystem.GetDevice<Keyboard>();
-        if (kb != null)
+        if (inputManager == null) return;
+
+        PlayerInputData input = inputManager.CurrentInput;
+
+        if (input.jumpPressed)
+            IntentarSaltar();
+
+        if (!transicionando && estaEnSuelo)
         {
-            if (kb.spaceKey.wasPressedThisFrame)
-                IntentarSaltar();
-
-            if (!transicionando && estaEnSuelo)
-            {
-                if (kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame)
-                    CambiarCarril(-1);
-
-                if (kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame)
-                    CambiarCarril(1);
-            }
+            float movX = input.movement.x;
+            if (Mathf.Abs(movX) > 0.5f && Mathf.Abs(direccionInputAnterior) <= 0.5f)
+                CambiarCarril((int)Mathf.Sign(movX));
+            direccionInputAnterior = movX;
+        }
+        else
+        {
+            direccionInputAnterior = 0f;
         }
     }
 

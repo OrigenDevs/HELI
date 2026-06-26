@@ -11895,16 +11895,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9efacaafefb522449a783b8a472697bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunnerMovement
-  velocidad: 10
+  velocidad: 20
   eje: 0
   direccion: 1
   carriles:
   - altura: -1
     profundidad: 0
   - altura: -4
-    profundidad: -3
+    profundidad: -6
   carrilInicial: 0
-  duracionTransicion: 0.15
+  duracionTransicion: 0.08
   distanciaAlSuelo: 2.1
 --- !u!1 &1987780440
 GameObject:
