@@ -85,7 +85,7 @@ public class RunnerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!estaVivo || transicionando) return;
+        if (!estaVivo) return;
 
         float dir = Mathf.Sign(direccion);
         Vector3 v = rb.linearVelocity;
@@ -113,8 +113,8 @@ public class RunnerMovement : MonoBehaviour
         transicionando = true;
         Carril destino = carriles[carrilActual];
 
-        Vector3 inicio = rb.position;
-        Vector3 objetivo = new Vector3(inicio.x, destino.altura, destino.profundidad);
+        float inicioY = rb.position.y;
+        float inicioZ = rb.position.z;
 
         float t = 0;
         while (t < 1f)
@@ -122,15 +122,17 @@ public class RunnerMovement : MonoBehaviour
             t += Time.deltaTime / duracionTransicion;
             float suavizado = t * t * (3f - 2f * t);
 
-            Vector3 pos = Vector3.Lerp(inicio, objetivo, suavizado);
-            pos.x = rb.position.x;
+            Vector3 pos = rb.position;
+            pos.y = Mathf.Lerp(inicioY, destino.altura, suavizado);
+            pos.z = Mathf.Lerp(inicioZ, destino.profundidad, suavizado);
 
             rb.MovePosition(pos);
             yield return null;
         }
 
-        Vector3 final = objetivo;
-        final.x = rb.position.x;
+        Vector3 final = rb.position;
+        final.y = destino.altura;
+        final.z = destino.profundidad;
         rb.MovePosition(final);
 
         transicionando = false;
