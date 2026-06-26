@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(JumpController))]
 public class RunnerMovement : MonoBehaviour
 {
-    [Header("Movimiento")]
+    [Header("Movimiento adelante")]
     public float velocidad = 8f;
 
     [Tooltip("Eje de movimiento: X, Y o Z")]
@@ -15,6 +15,16 @@ public class RunnerMovement : MonoBehaviour
 
     [Tooltip("Dirección: 1 = positivo, -1 = negativo")]
     public float direccion = 1f;
+
+    [Header("Carriles")]
+    [Tooltip("Separación entre carriles")]
+    public float anchoCarril = 2f;
+
+    [Tooltip("Velocidad de deslizamiento entre carriles")]
+    public float velocidadCambioCarril = 10f;
+
+    [Tooltip("Carril inicial (0 = centro)")]
+    public int carrilInicial = 0;
 
     [Header("Detección de suelo")]
     [SerializeField] private float distanciaAlSuelo = 1.1f;
@@ -25,6 +35,10 @@ public class RunnerMovement : MonoBehaviour
     private bool estaEnSuelo = false;
     private bool estaVivo = true;
 
+    private int carrilActual;
+    private float posicionXObjetivo;
+    private float posicionXBase;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -34,6 +48,10 @@ public class RunnerMovement : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationY
                        | RigidbodyConstraints.FreezeRotationZ;
+
+        carrilActual = carrilInicial;
+        posicionXBase = transform.position.x;
+        posicionXObjetivo = posicionXBase + carrilActual * anchoCarril;
     }
 
     void Update()
@@ -43,32 +61,51 @@ public class RunnerMovement : MonoBehaviour
         VerificarSuelo();
         ManejarAnimaciones();
 
-        // Input teclado — compatible con WebGL y nuevo Input System
         var kb = InputSystem.GetDevice<Keyboard>();
-        if (kb != null && kb.spaceKey.wasPressedThisFrame)
-            IntentarSaltar();
+        if (kb != null)
+        {
+            if (kb.spaceKey.wasPressedThisFrame)
+                IntentarSaltar();
+
+            if (kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame)
+                CambiarCarril(-1);
+
+            if (kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame)
+                CambiarCarril(1);
+        }
     }
 
     void FixedUpdate()
     {
         if (!estaVivo) return;
 
-        // Movimiento constante según eje y dirección configurados
-        float dir = Mathf.Sign(direccion); // fuerza +1 o -1
+        float dir = Mathf.Sign(direccion);
         Vector3 v = rb.linearVelocity;
+
         switch (eje)
         {
             case EjeMovimiento.X: v.x = velocidad * dir; break;
             case EjeMovimiento.Y: v.y = velocidad * dir; break;
             case EjeMovimiento.Z: v.z = velocidad * dir; break;
         }
+
+        // Deslizar hacia el carril objetivo en el eje horizontal no usado
+        float diff = posicionXObjetivo - rb.position.x;
+        if (Mathf.Abs(diff) > 0.02f)
+            v.x = Mathf.Sign(diff) * velocidadCambioCarril;
+        else
+            v.x = 0f;
+
         rb.linearVelocity = v;
     }
 
-    /// <summary>
-    /// Llamado desde el botón de UI o desde Update (teclado).
-    /// Asigna este método al OnClick() del botón de salto en la UI.
-    /// </summary>
+    private void CambiarCarril(int direccionCarril)
+    {
+        if (!estaEnSuelo) return;
+        carrilActual += direccionCarril;
+        posicionXObjetivo = posicionXBase + carrilActual * anchoCarril;
+    }
+
     public void IntentarSaltar()
     {
         if (estaEnSuelo && estaVivo)
@@ -94,9 +131,6 @@ public class RunnerMovement : MonoBehaviour
         animator.SetBool("correr", estaEnSuelo);
     }
 
-    /// <summary>
-    /// Llamado por ObstacleHandler cuando el jugador pierde.
-    /// </summary>
     public void Detener()
     {
         estaVivo = false;
