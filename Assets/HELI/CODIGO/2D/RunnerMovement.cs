@@ -97,6 +97,13 @@ public class RunnerMovement : MonoBehaviour
             case EjeMovimiento.Z: v.z = velocidad * dir; break;
         }
 
+        if (transicionando)
+        {
+            if (eje != EjeMovimiento.X) v.x = 0;
+            if (eje != EjeMovimiento.Y) v.y = 0;
+            if (eje != EjeMovimiento.Z) v.z = 0;
+        }
+
         rb.linearVelocity = v;
     }
 
@@ -113,8 +120,8 @@ public class RunnerMovement : MonoBehaviour
         transicionando = true;
         Carril destino = carriles[carrilActual];
 
-        float inicioY = rb.position.y;
-        float inicioZ = rb.position.z;
+        float inicioY = transform.position.y;
+        float inicioZ = transform.position.z;
 
         float t = 0;
         while (t < 1f)
@@ -122,18 +129,21 @@ public class RunnerMovement : MonoBehaviour
             t += Time.deltaTime / duracionTransicion;
             float suavizado = t * t * (3f - 2f * t);
 
-            Vector3 pos = rb.position;
+            Vector3 pos = transform.position;
             pos.y = Mathf.Lerp(inicioY, destino.altura, suavizado);
             pos.z = Mathf.Lerp(inicioZ, destino.profundidad, suavizado);
+            transform.position = pos;
 
-            rb.MovePosition(pos);
             yield return null;
         }
 
-        Vector3 final = rb.position;
+        Vector3 final = transform.position;
         final.y = destino.altura;
         final.z = destino.profundidad;
-        rb.MovePosition(final);
+        transform.position = final;
+
+        // Sincronizar Rigidbody con la posición final
+        rb.position = transform.position;
 
         transicionando = false;
     }
