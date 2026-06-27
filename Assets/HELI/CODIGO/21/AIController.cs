@@ -94,6 +94,8 @@ public class AIController : MonoBehaviour
         GameManager gm = GameManager.Instance;
         gm.iaPlantada = true;
 
+        gm.menuTurnoIA.SetActive(false);
+
         // Mostrar cartel IA stand
         if (objetoIAStand != null)
         {
