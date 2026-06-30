@@ -39,7 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorTreshold: 1
-    - _LineWidth: 8
+    - _LineWidth: 6
     - _NormalTreshold: 10
     - _OVERLAY: 1
     m_Colors:

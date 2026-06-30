@@ -2,18 +2,23 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class MovimientoBEU : MonoBehaviour
 {
     [Header("Movimiento")]
     public float velocidad = 5f;
+    public float umbralMovimiento = 0.1f;
 
     private Rigidbody2D rb;
+    private Animator animator;
     private PlayerInputActions actions;
     private Vector2 direccion;
+    private static readonly int ParamVelocidad = Animator.StringToHash("velocidad");
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
@@ -47,5 +52,6 @@ public class MovimientoBEU : MonoBehaviour
     void FixedUpdate()
     {
         rb.linearVelocity = direccion * velocidad;
+        animator.SetFloat(ParamVelocidad, rb.linearVelocity.magnitude > umbralMovimiento ? rb.linearVelocity.magnitude : 0f);
     }
 }
