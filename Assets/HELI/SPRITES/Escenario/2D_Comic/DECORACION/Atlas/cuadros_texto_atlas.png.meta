@@ -1,0 +1,607 @@
+fileFormatVersion: 2
+guid: 50a80990913123c4ebd78194dfe6a844
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_0
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 2946
+        width: 1006
+        height: 989
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5657b8ddaf9adbe43b77e6e343dd50b5
+      internalID: -1199278712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_1
+      rect:
+        serializedVersion: 2
+        x: 1305
+        y: 3074
+        width: 1320
+        height: 865
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb127b902c089b749b0e99ff2187febe
+      internalID: -1698304421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_2
+      rect:
+        serializedVersion: 2
+        x: 2719
+        y: 3070
+        width: 1098
+        height: 840
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ffe4f61ed2cc89468726ab515f7d638
+      internalID: 2027539019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_5
+      rect:
+        serializedVersion: 2
+        x: 1472
+        y: 2351
+        width: 1056
+        height: 626
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82b375fff6724ee4781dd07d6483a78c
+      internalID: -1950988982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_6
+      rect:
+        serializedVersion: 2
+        x: 3042
+        y: 2292
+        width: 802
+        height: 632
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8824579b453ab2342ad1299efb0a5d9d
+      internalID: 819275497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_8
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 1606
+        width: 745
+        height: 635
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e1ee49187c4cc2408f2a4d0d38323b5
+      internalID: -764636177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_10
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 1607
+        width: 822
+        height: 624
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f99a7eb79ce36f41aefc57d74140888
+      internalID: -1854930006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_13
+      rect:
+        serializedVersion: 2
+        x: 1890
+        y: 1647
+        width: 642
+        height: 569
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 629de544d8920eb48b69ab0461480fa4
+      internalID: -482112859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_14
+      rect:
+        serializedVersion: 2
+        x: 2586
+        y: 1681
+        width: 640
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 261db22f729a7b04a8543330e60ecf28
+      internalID: -15715975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_17
+      rect:
+        serializedVersion: 2
+        x: 3273
+        y: 1567
+        width: 675
+        height: 685
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2050dc24d96c3304191d24b30af77cd0
+      internalID: 1973703906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_21
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 782
+        width: 686
+        height: 584
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06dc3e91c0f2c8b4c8e0827707108014
+      internalID: -1427180608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_22
+      rect:
+        serializedVersion: 2
+        x: 1683
+        y: 805
+        width: 706
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16e98eb0d702b1c4dac8bd9f6385ccc1
+      internalID: -1748200977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_24
+      rect:
+        serializedVersion: 2
+        x: 2467
+        y: 779
+        width: 822
+        height: 716
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf88b7f643eacdc48b6864995e5d030e
+      internalID: 1218892846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_26
+      rect:
+        serializedVersion: 2
+        x: 3307
+        y: 788
+        width: 687
+        height: 734
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79b4e14ee73a9f34e925c115cf08329a
+      internalID: -910174849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_31
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 765
+        width: 757
+        height: 505
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b651c617baed8a74baf7850796d505ea
+      internalID: 597103290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_40
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 23
+        width: 1028
+        height: 693
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 291a3a15cb21de946998e11a1e400c79
+      internalID: -1760699319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_41
+      rect:
+        serializedVersion: 2
+        x: 1259
+        y: 26
+        width: 786
+        height: 649
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b8e56287599c0c4f8dbd33971a3583b
+      internalID: -1427403387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_42
+      rect:
+        serializedVersion: 2
+        x: 2144
+        y: 65
+        width: 971
+        height: 535
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54f9dfd42a5cb314585ce69ad405bc6d
+      internalID: 347495447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuadros_texto_atlas_43
+      rect:
+        serializedVersion: 2
+        x: 3292
+        y: 57
+        width: 627
+        height: 611
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cbb9e3a2c785d543b15a71010f19858
+      internalID: -740957790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      cuadros_texto_atlas_0: -1199278712
+      cuadros_texto_atlas_1: -1698304421
+      cuadros_texto_atlas_10: -1854930006
+      cuadros_texto_atlas_11: 1847046868
+      cuadros_texto_atlas_12: -1818384548
+      cuadros_texto_atlas_13: -482112859
+      cuadros_texto_atlas_14: -15715975
+      cuadros_texto_atlas_15: -292110297
+      cuadros_texto_atlas_16: 1981427916
+      cuadros_texto_atlas_17: 1973703906
+      cuadros_texto_atlas_18: 1801563287
+      cuadros_texto_atlas_19: 764840112
+      cuadros_texto_atlas_2: 2027539019
+      cuadros_texto_atlas_20: -300370893
+      cuadros_texto_atlas_21: -1427180608
+      cuadros_texto_atlas_22: -1748200977
+      cuadros_texto_atlas_23: 2109593811
+      cuadros_texto_atlas_24: 1218892846
+      cuadros_texto_atlas_25: -1626189847
+      cuadros_texto_atlas_26: -910174849
+      cuadros_texto_atlas_27: -999240169
+      cuadros_texto_atlas_28: 2046146363
+      cuadros_texto_atlas_29: -308038912
+      cuadros_texto_atlas_3: -8963287
+      cuadros_texto_atlas_30: 1026708337
+      cuadros_texto_atlas_31: 597103290
+      cuadros_texto_atlas_32: -1247564010
+      cuadros_texto_atlas_33: 1291196686
+      cuadros_texto_atlas_34: 1967758915
+      cuadros_texto_atlas_35: 1646230808
+      cuadros_texto_atlas_36: -615208277
+      cuadros_texto_atlas_37: 591458051
+      cuadros_texto_atlas_38: -1695756124
+      cuadros_texto_atlas_39: -741576849
+      cuadros_texto_atlas_4: -1233264981
+      cuadros_texto_atlas_40: -1760699319
+      cuadros_texto_atlas_41: -1427403387
+      cuadros_texto_atlas_42: 347495447
+      cuadros_texto_atlas_43: -740957790
+      cuadros_texto_atlas_5: -1950988982
+      cuadros_texto_atlas_6: 819275497
+      cuadros_texto_atlas_7: 1217159955
+      cuadros_texto_atlas_8: -764636177
+      cuadros_texto_atlas_9: -284013128
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
