@@ -14,6 +14,8 @@ public class MovimientoBEU : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     void OnEnable()
