@@ -6,7 +6,6 @@ public class GolpeJugador : MonoBehaviour
 {
     [Header("Golpe")]
     public float dano = 1f;
-    public float duracionGolpe = 0.5f;
     public int golpesDisponibles = 3;
     public Vector2 tamanoZona = new Vector2(0.5f, 0.5f);
     public Vector2 offsetZona = new Vector2(1f, 0f);
@@ -57,24 +56,21 @@ public class GolpeJugador : MonoBehaviour
         movimiento.atacando = true;
         rb.linearVelocity = Vector2.zero;
 
-        if (camara != null) camara.Sacudir();
-
         animator.SetInteger(ParamVariante, contadorGolpes);
         animator.SetTrigger(ParamGolpe);
 
         contadorGolpes = (contadorGolpes + 1) % golpesDisponibles;
-
-        Invoke(nameof(AplicarGolpe), duracionGolpe * 0.5f);
-        Invoke(nameof(FinGolpe), duracionGolpe);
     }
 
-    void AplicarGolpe()
+    public void AplicarGolpe()
     {
+        if (camara != null) camara.Sacudir();
+
         if (enemigoEnRango != null)
             enemigoEnRango.RecibirDano(dano);
     }
 
-    void FinGolpe()
+    public void FinGolpe()
     {
         golpeando = false;
         movimiento.atacando = false;
