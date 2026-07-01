@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4632729039094911367}
   - component: {fileID: 1278618767431189931}
   - component: {fileID: 948828717886614842}
+  - component: {fileID: 1847446103523054337}
   m_Layer: 0
   m_Name: CachocaEnemy
   m_TagString: Untagged
@@ -115,6 +116,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1847446103523054337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6087133602847984115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca663237e7b4178408e101bd47c41dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventosEnemigo
 --- !u!1 &6307723636773124491
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,6 +198,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
   salud: 5
+  fuerzaMuerte: 0.35
+  duracionEmpuje: 0.35
+  curvaEmpuje:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   animator: {fileID: 948828717886614842}
 --- !u!61 &2577240646493090083
 BoxCollider2D:

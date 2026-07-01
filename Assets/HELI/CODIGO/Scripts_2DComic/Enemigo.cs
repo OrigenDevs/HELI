@@ -5,6 +5,11 @@ public class Enemigo : MonoBehaviour
     [Header("Vida")]
     public float salud = 1f;
 
+    [Header("Muerte")]
+    public float fuerzaMuerte = 5f;
+    public float duracionEmpuje = 0.15f;
+    public AnimationCurve curvaEmpuje = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
     [Header("Animaciones")]
     public Animator animator;
 
@@ -56,4 +61,33 @@ public class Enemigo : MonoBehaviour
             col.enabled = false;
         Destroy(gameObject, 1f);
     }
+
+    public void EventoMuerte()
+    {
+        MovimientoBEU jugador = FindFirstObjectByType<MovimientoBEU>();
+        if (jugador == null) return;
+
+        float dirX = Mathf.Sign(jugador.transform.position.x - transform.position.x);
+        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * dirX, transform.localScale.y, transform.localScale.z);
+
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) sr.flipX = false;
+
+        StartCoroutine(EmpujarMuerte(-dirX));
+    }
+
+    System.Collections.IEnumerator EmpujarMuerte(float direccion)
+    {
+        float t = 0f;
+        float prev = 0f;
+        while (t < duracionEmpuje)
+        {
+            t += Time.deltaTime;
+            float factor = curvaEmpuje.Evaluate(t / duracionEmpuje);
+            transform.Translate(new Vector3(direccion * fuerzaMuerte * (factor - prev), 0f, 0f));
+            prev = factor;
+            yield return null;
+        }
+    }
+
 }
