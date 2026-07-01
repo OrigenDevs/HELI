@@ -15,12 +15,14 @@ public class MovimientoBEU : MonoBehaviour
     private Animator animator;
     private PlayerInputActions actions;
     private Vector2 direccion;
+    private SpriteRenderer sr;
     private static readonly int ParamVelocidad = Animator.StringToHash("velocidad");
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        sr = GetComponentInChildren<SpriteRenderer>();
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
@@ -55,6 +57,10 @@ public class MovimientoBEU : MonoBehaviour
     {
         if (!atacando)
             rb.linearVelocity = direccion * velocidad;
+
+        if (sr != null && !atacando && Mathf.Abs(direccion.x) > umbralMovimiento)
+            sr.flipX = direccion.x < 0f;
+
         animator.SetFloat(ParamVelocidad, atacando ? 0f : rb.linearVelocity.magnitude);
     }
 }

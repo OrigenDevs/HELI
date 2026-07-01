@@ -29,10 +29,23 @@ public class Enemigo : MonoBehaviour
     {
         salud -= dano;
 
+        MirarAlJugador();
+
         if (salud <= 0f)
             Derrotar();
         else if (animator != null)
             animator.SetTrigger(ParamGolpeado);
+    }
+
+    void MirarAlJugador()
+    {
+        MovimientoBEU jugador = FindFirstObjectByType<MovimientoBEU>();
+        if (jugador == null) return;
+
+        float dirX = Mathf.Sign(jugador.transform.position.x - transform.position.x);
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+            sr.flipX = dirX < 0f;
     }
 
     void Derrotar()
