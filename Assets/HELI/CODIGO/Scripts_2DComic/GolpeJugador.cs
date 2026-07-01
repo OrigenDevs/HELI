@@ -18,6 +18,7 @@ public class GolpeJugador : MonoBehaviour
     private bool golpeando;
     private int contadorGolpes;
     private Enemigo enemigoEnRango;
+    private CamaraSigue camara;
     private static readonly int ParamGolpe = Animator.StringToHash("golpe");
     private static readonly int ParamVariante = Animator.StringToHash("golpeVariante");
 
@@ -30,6 +31,8 @@ public class GolpeJugador : MonoBehaviour
 
     void Start()
     {
+        camara = FindFirstObjectByType<CamaraSigue>();
+
         GameObject zona = new GameObject("ZonaGolpe");
         zona.transform.SetParent(transform);
         zona.transform.localPosition = offsetZona;
@@ -53,6 +56,8 @@ public class GolpeJugador : MonoBehaviour
         golpeando = true;
         movimiento.atacando = true;
         rb.linearVelocity = Vector2.zero;
+
+        if (camara != null) camara.Sacudir();
 
         animator.SetInteger(ParamVariante, contadorGolpes);
         animator.SetTrigger(ParamGolpe);
