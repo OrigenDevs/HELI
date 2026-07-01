@@ -3548,8 +3548,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CamaraSigue
   objetivo: {fileID: 1083757971}
   suavizado: 0.25
-  intensidadTemblor: 0.01
-  duracionTemblor: 0.1
+  intensidadTemblor: 0.02
+  duracionTemblor: 0.05
 --- !u!1 &535711489
 GameObject:
   m_ObjectHideFlags: 0
@@ -5774,7 +5774,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.0095239, y: 3.847619}
+    oldSize: {x: 2.94, y: 3.75}
     newSize: {x: 2.7538462, y: 3.7692308}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -5817,6 +5817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GolpeJugador
   dano: 1
+  duracionGolpe: 0.5
   golpesDisponibles: 2
   tamanoZona: {x: 0.2, y: 0.5}
   offsetZona: {x: 1, y: 0}

@@ -11,6 +11,10 @@ public class GolpeJugador : MonoBehaviour
     public Vector2 tamanoZona = new Vector2(0.5f, 0.5f);
     public Vector2 offsetZona = new Vector2(1f, 0f);
 
+    [Header("Aproximacion")]
+    public float distanciaAtaque = 0.3f;
+    public float velocidadAproximacion = 8f;
+
     private MovimientoBEU movimiento;
     private Animator animator;
     private Rigidbody2D rb;
@@ -57,6 +61,9 @@ public class GolpeJugador : MonoBehaviour
         movimiento.atacando = true;
         rb.linearVelocity = Vector2.zero;
 
+        if (enemigoEnRango != null)
+            StartCoroutine(AproximarseAlEnemigo());
+
         animator.SetInteger(ParamVariante, contadorGolpes);
         animator.SetTrigger(ParamGolpe);
 
@@ -64,6 +71,20 @@ public class GolpeJugador : MonoBehaviour
 
         Invoke(nameof(AplicarGolpe), duracionGolpe * 0.5f);
         Invoke(nameof(FinGolpe), duracionGolpe);
+    }
+
+    System.Collections.IEnumerator AproximarseAlEnemigo()
+    {
+        Vector2 objetivo = enemigoEnRango.transform.position;
+
+        float dirX = Mathf.Sign(transform.position.x - objetivo.x);
+        objetivo.x += dirX * distanciaAtaque;
+
+        while (Vector2.Distance(transform.position, objetivo) > 0.01f)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, objetivo, velocidadAproximacion * Time.deltaTime);
+            yield return null;
+        }
     }
 
     public void EventoGolpe()
