@@ -7,6 +7,7 @@ public class GolpeJugador : MonoBehaviour
     [Header("Golpe")]
     public float dano = 1f;
     public float duracionGolpe = 0.5f;
+    public int golpesDisponibles = 3;
     public Vector2 tamanoZona = new Vector2(0.5f, 0.5f);
     public Vector2 offsetZona = new Vector2(1f, 0f);
 
@@ -15,8 +16,10 @@ public class GolpeJugador : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D zonaGolpe;
     private bool golpeando;
+    private int contadorGolpes;
     private Enemigo enemigoEnRango;
     private static readonly int ParamGolpe = Animator.StringToHash("golpe");
+    private static readonly int ParamVariante = Animator.StringToHash("golpeVariante");
 
     void Awake()
     {
@@ -51,7 +54,10 @@ public class GolpeJugador : MonoBehaviour
         movimiento.atacando = true;
         rb.linearVelocity = Vector2.zero;
 
+        animator.SetInteger(ParamVariante, contadorGolpes);
         animator.SetTrigger(ParamGolpe);
+
+        contadorGolpes = (contadorGolpes + 1) % golpesDisponibles;
 
         Invoke(nameof(AplicarGolpe), duracionGolpe * 0.5f);
         Invoke(nameof(FinGolpe), duracionGolpe);
