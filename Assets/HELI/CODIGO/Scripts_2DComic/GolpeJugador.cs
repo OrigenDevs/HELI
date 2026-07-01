@@ -62,10 +62,13 @@ public class GolpeJugador : MonoBehaviour
         contadorGolpes = (contadorGolpes + 1) % golpesDisponibles;
     }
 
-    public void AplicarGolpe()
+    public void EventoGolpe()
     {
         if (camara != null) camara.Sacudir();
+    }
 
+    public void AplicarGolpe()
+    {
         if (enemigoEnRango != null)
             enemigoEnRango.RecibirDano(dano);
     }
