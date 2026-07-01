@@ -6,6 +6,7 @@ public class GolpeJugador : MonoBehaviour
 {
     [Header("Golpe")]
     public float dano = 1f;
+    public float duracionGolpe = 0.5f;
     public int golpesDisponibles = 3;
     public Vector2 tamanoZona = new Vector2(0.5f, 0.5f);
     public Vector2 offsetZona = new Vector2(1f, 0f);
@@ -60,6 +61,9 @@ public class GolpeJugador : MonoBehaviour
         animator.SetTrigger(ParamGolpe);
 
         contadorGolpes = (contadorGolpes + 1) % golpesDisponibles;
+
+        Invoke(nameof(AplicarGolpe), duracionGolpe * 0.5f);
+        Invoke(nameof(FinGolpe), duracionGolpe);
     }
 
     public void EventoGolpe()
