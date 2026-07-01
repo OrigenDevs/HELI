@@ -9,6 +9,8 @@ public class MovimientoBEU : MonoBehaviour
     public float velocidad = 5f;
     public float umbralMovimiento = 0.1f;
 
+    [HideInInspector] public bool atacando;
+
     private Rigidbody2D rb;
     private Animator animator;
     private PlayerInputActions actions;
@@ -51,7 +53,8 @@ public class MovimientoBEU : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.linearVelocity = direccion * velocidad;
-        animator.SetFloat(ParamVelocidad, rb.linearVelocity.magnitude > umbralMovimiento ? rb.linearVelocity.magnitude : 0f);
+        if (!atacando)
+            rb.linearVelocity = direccion * velocidad;
+        animator.SetFloat(ParamVelocidad, atacando ? 0f : rb.linearVelocity.magnitude);
     }
 }

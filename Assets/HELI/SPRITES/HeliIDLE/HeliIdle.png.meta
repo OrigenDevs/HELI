@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 130
+  spritePixelsToUnits: 170
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,10 +100,10 @@ TextureImporter:
       name: HeliIdle_0
       rect:
         serializedVersion: 2
-        x: 252
-        y: 2697
-        width: 356
-        height: 490
+        x: 121
+        y: 3277
+        width: 501
+        height: 651
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -122,10 +122,10 @@ TextureImporter:
       name: HeliIdle_1
       rect:
         serializedVersion: 2
-        x: 1082
-        y: 2697
-        width: 355
-        height: 490
+        x: 792
+        y: 3277
+        width: 500
+        height: 651
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -144,10 +144,10 @@ TextureImporter:
       name: HeliIdle_2
       rect:
         serializedVersion: 2
-        x: 1910
-        y: 2697
-        width: 356
-        height: 489
+        x: 1461
+        y: 3276
+        width: 499
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,10 +166,10 @@ TextureImporter:
       name: HeliIdle_3
       rect:
         serializedVersion: 2
-        x: 2740
-        y: 2697
-        width: 356
-        height: 490
+        x: 2130
+        y: 3276
+        width: 501
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,10 +188,10 @@ TextureImporter:
       name: HeliIdle_4
       rect:
         serializedVersion: 2
-        x: 3568
-        y: 2697
-        width: 358
-        height: 490
+        x: 2802
+        y: 3276
+        width: 501
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -210,10 +210,10 @@ TextureImporter:
       name: HeliIdle_5
       rect:
         serializedVersion: 2
-        x: 4397
-        y: 2697
-        width: 358
-        height: 489
+        x: 3473
+        y: 3276
+        width: 501
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -232,10 +232,10 @@ TextureImporter:
       name: HeliIdle_6
       rect:
         serializedVersion: 2
-        x: 254
-        y: 1866
-        width: 356
-        height: 486
+        x: 119
+        y: 2480
+        width: 504
+        height: 651
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -254,10 +254,10 @@ TextureImporter:
       name: HeliIdle_7
       rect:
         serializedVersion: 2
-        x: 1082
-        y: 1867
-        width: 358
-        height: 485
+        x: 789
+        y: 2479
+        width: 503
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,10 +276,10 @@ TextureImporter:
       name: HeliIdle_8
       rect:
         serializedVersion: 2
-        x: 1911
-        y: 1865
-        width: 358
-        height: 485
+        x: 1459
+        y: 2479
+        width: 503
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -298,10 +298,10 @@ TextureImporter:
       name: HeliIdle_9
       rect:
         serializedVersion: 2
-        x: 2740
-        y: 1866
-        width: 358
-        height: 484
+        x: 2129
+        y: 2479
+        width: 503
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -320,10 +320,10 @@ TextureImporter:
       name: HeliIdle_10
       rect:
         serializedVersion: 2
-        x: 3569
-        y: 1867
-        width: 357
-        height: 485
+        x: 2801
+        y: 2479
+        width: 502
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -342,10 +342,10 @@ TextureImporter:
       name: HeliIdle_11
       rect:
         serializedVersion: 2
-        x: 4398
-        y: 1867
-        width: 356
-        height: 485
+        x: 3472
+        y: 2479
+        width: 504
+        height: 652
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -364,10 +364,10 @@ TextureImporter:
       name: HeliIdle_12
       rect:
         serializedVersion: 2
-        x: 252
-        y: 1039
-        width: 357
-        height: 483
+        x: 119
+        y: 1679
+        width: 505
+        height: 657
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -386,10 +386,10 @@ TextureImporter:
       name: HeliIdle_13
       rect:
         serializedVersion: 2
-        x: 1082
-        y: 1040
-        width: 355
-        height: 482
+        x: 788
+        y: 1680
+        width: 505
+        height: 656
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -408,10 +408,10 @@ TextureImporter:
       name: HeliIdle_14
       rect:
         serializedVersion: 2
-        x: 1910
-        y: 1039
-        width: 354
-        height: 485
+        x: 1457
+        y: 1679
+        width: 506
+        height: 657
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -430,10 +430,10 @@ TextureImporter:
       name: HeliIdle_15
       rect:
         serializedVersion: 2
-        x: 2739
-        y: 1039
-        width: 355
-        height: 486
+        x: 2127
+        y: 1679
+        width: 506
+        height: 657
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -452,10 +452,10 @@ TextureImporter:
       name: HeliIdle_16
       rect:
         serializedVersion: 2
-        x: 3568
-        y: 1041
-        width: 354
-        height: 486
+        x: 2799
+        y: 1679
+        width: 506
+        height: 657
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -474,10 +474,10 @@ TextureImporter:
       name: HeliIdle_17
       rect:
         serializedVersion: 2
-        x: 4397
-        y: 1039
-        width: 355
-        height: 489
+        x: 3470
+        y: 1679
+        width: 507
+        height: 657
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -496,10 +496,10 @@ TextureImporter:
       name: HeliIdle_18
       rect:
         serializedVersion: 2
-        x: 250
-        y: 209
-        width: 353
-        height: 490
+        x: 118
+        y: 878
+        width: 506
+        height: 659
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -518,10 +518,10 @@ TextureImporter:
       name: HeliIdle_19
       rect:
         serializedVersion: 2
-        x: 1078
-        y: 209
-        width: 354
-        height: 493
+        x: 786
+        y: 878
+        width: 507
+        height: 659
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -540,10 +540,10 @@ TextureImporter:
       name: HeliIdle_20
       rect:
         serializedVersion: 2
-        x: 1908
-        y: 209
-        width: 352
-        height: 494
+        x: 1457
+        y: 878
+        width: 506
+        height: 659
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -562,10 +562,10 @@ TextureImporter:
       name: HeliIdle_21
       rect:
         serializedVersion: 2
-        x: 2737
-        y: 209
-        width: 352
-        height: 494
+        x: 2126
+        y: 878
+        width: 507
+        height: 659
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -584,10 +584,10 @@ TextureImporter:
       name: HeliIdle_22
       rect:
         serializedVersion: 2
-        x: 3568
-        y: 209
-        width: 352
-        height: 494
+        x: 2799
+        y: 878
+        width: 507
+        height: 659
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -606,10 +606,10 @@ TextureImporter:
       name: HeliIdle_23
       rect:
         serializedVersion: 2
-        x: 4396
-        y: 209
-        width: 353
-        height: 494
+        x: 3469
+        y: 879
+        width: 508
+        height: 658
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -620,6 +620,138 @@ TextureImporter:
       bones: []
       spriteID: 713835a4f95897046a5cf1dd64e02db8
       internalID: -1398165668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HeliIdle_24
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 79
+        width: 508
+        height: 661
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be370b7170b9d8d4887208eb83b5a378
+      internalID: -2104617736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HeliIdle_25
+      rect:
+        serializedVersion: 2
+        x: 787
+        y: 79
+        width: 508
+        height: 661
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b1e6507516118b46b0937d5a4f64dc7
+      internalID: -354797051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HeliIdle_26
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 79
+        width: 509
+        height: 661
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3447d0d1284b74647acb658feaa440d4
+      internalID: -444994848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HeliIdle_27
+      rect:
+        serializedVersion: 2
+        x: 2127
+        y: 79
+        width: 508
+        height: 661
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 296dbee056a943049967bc8f3913fc18
+      internalID: -917302143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HeliIdle_28
+      rect:
+        serializedVersion: 2
+        x: 2799
+        y: 79
+        width: 508
+        height: 661
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: befc63f469131a04a85971672d6b4ced
+      internalID: -1568244047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HeliIdle_29
+      rect:
+        serializedVersion: 2
+        x: 3469
+        y: 79
+        width: 509
+        height: 661
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84fec2759b1f3cc4b811d363e8039544
+      internalID: 1935772496
       vertices: []
       indices: 
       edges: []
@@ -659,6 +791,12 @@ TextureImporter:
       HeliIdle_21: -1434476970
       HeliIdle_22: -1490213805
       HeliIdle_23: -1398165668
+      HeliIdle_24: -2104617736
+      HeliIdle_25: -354797051
+      HeliIdle_26: -444994848
+      HeliIdle_27: -917302143
+      HeliIdle_28: -1568244047
+      HeliIdle_29: 1935772496
       HeliIdle_3: -645719534
       HeliIdle_4: -1000730576
       HeliIdle_5: 1671088105
