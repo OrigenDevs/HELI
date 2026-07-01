@@ -12,6 +12,7 @@ public class GolpeJugador : MonoBehaviour
     public Vector2 offsetZona = new Vector2(1f, 0f);
 
     [Header("Aproximacion")]
+    public float distanciaAtaque = 0.3f;
     public float velocidadAproximacion = 8f;
 
     private MovimientoBEU movimiento;
@@ -61,12 +62,7 @@ public class GolpeJugador : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
 
         if (enemigoEnRango != null)
-        {
-            float dirX = Mathf.Sign(enemigoEnRango.transform.position.x - transform.position.x);
-            zonaGolpe.transform.localPosition = new Vector2(Mathf.Abs(offsetZona.x) * dirX, offsetZona.y);
-
             StartCoroutine(AproximarseAlEnemigo());
-        }
 
         animator.SetInteger(ParamVariante, contadorGolpes);
         animator.SetTrigger(ParamGolpe);
@@ -79,9 +75,10 @@ public class GolpeJugador : MonoBehaviour
 
     System.Collections.IEnumerator AproximarseAlEnemigo()
     {
-        float dirX = Mathf.Sign(enemigoEnRango.transform.position.x - transform.position.x);
         Vector2 objetivo = enemigoEnRango.transform.position;
-        objetivo.x -= dirX * Mathf.Abs(offsetZona.x);
+
+        float dirX = Mathf.Sign(transform.position.x - objetivo.x);
+        objetivo.x += dirX * distanciaAtaque;
 
         while (Vector2.Distance(transform.position, objetivo) > 0.01f)
         {
