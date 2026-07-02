@@ -12,10 +12,16 @@ public class Enemigo : MonoBehaviour
 
     [Header("Animaciones")]
     public Animator animator;
+    public float tiempoCambioIdle = 2f;
 
     private Collider2D col;
     private static readonly int ParamGolpeado = Animator.StringToHash("golpeado");
     private static readonly int ParamDerrotado = Animator.StringToHash("derrotado");
+    private static readonly int ParamIdleVariante = Animator.StringToHash("idleVariante");
+
+    public System.Action onDerrotado;
+    public static System.Action onCualquierDerrota;
+    public bool muerto;
 
     void Awake()
     {
@@ -28,6 +34,18 @@ public class Enemigo : MonoBehaviour
     {
         if (animator == null)
             Debug.LogWarning("Enemigo sin Animator. Arrástralo en el campo animator.", this);
+        else
+            StartCoroutine(AlternarIdle());
+    }
+
+    System.Collections.IEnumerator AlternarIdle()
+    {
+        while (!muerto)
+        {
+            yield return new WaitForSeconds(Random.Range(tiempoCambioIdle * 0.5f, tiempoCambioIdle * 1.5f));
+            if (animator != null && !muerto)
+                animator.SetInteger(ParamIdleVariante, Random.Range(0, 2));
+        }
     }
 
     public void RecibirDano(float dano)
@@ -55,6 +73,12 @@ public class Enemigo : MonoBehaviour
 
     void Derrotar()
     {
+        muerto = true;
+        if (onDerrotado != null)
+            onDerrotado();
+        if (onCualquierDerrota != null)
+            onCualquierDerrota();
+
         if (animator != null)
             animator.SetTrigger(ParamDerrotado);
         if (col != null)

@@ -10,6 +10,7 @@ public class MovimientoBEU : MonoBehaviour
     public float umbralMovimiento = 0.1f;
 
     [HideInInspector] public bool atacando;
+    [HideInInspector] public bool controlBloqueado;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -55,12 +56,12 @@ public class MovimientoBEU : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!atacando)
+        if (!atacando && !controlBloqueado)
             rb.linearVelocity = direccion * velocidad;
 
-        if (sr != null && !atacando && Mathf.Abs(direccion.x) > umbralMovimiento)
+        if (sr != null && !atacando && !controlBloqueado && Mathf.Abs(direccion.x) > umbralMovimiento)
             sr.flipX = direccion.x < 0f;
 
-        animator.SetFloat(ParamVelocidad, atacando ? 0f : rb.linearVelocity.magnitude);
+        animator.SetFloat(ParamVelocidad, atacando || controlBloqueado ? 0f : rb.linearVelocity.magnitude);
     }
 }
