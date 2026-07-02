@@ -10,6 +10,7 @@ public class SoundManager : MonoBehaviour
     private AudioSource fuenteSfx;
     private AudioSource fuenteMusica;
     private int indiceMusica;
+    private float volumenMusicaOriginal;
 
     void Awake()
     {
@@ -32,6 +33,7 @@ public class SoundManager : MonoBehaviour
         musicGO.transform.SetParent(transform);
         fuenteMusica = musicGO.AddComponent<AudioSource>();
         fuenteMusica.loop = false;
+        volumenMusicaOriginal = fuenteMusica.volume;
     }
 
     void Start()
@@ -76,5 +78,15 @@ public class SoundManager : MonoBehaviour
     {
         if (clip != null)
             fuenteSfx.PlayOneShot(clip);
+    }
+
+    public void BajarMusica(float factor = 0.2f)
+    {
+        fuenteMusica.volume = volumenMusicaOriginal * factor;
+    }
+
+    public void RestaurarMusica()
+    {
+        fuenteMusica.volume = volumenMusicaOriginal;
     }
 }

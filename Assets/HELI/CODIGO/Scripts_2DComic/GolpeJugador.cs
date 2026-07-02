@@ -20,9 +20,16 @@ public class GolpeJugador : MonoBehaviour
     [Header("Super")]
     public int enemigosParaSuper = 3;
     public float danoSuper = 9999f;
-    public ParticleSystem particulaSuper;
-    public AudioClip audioSuper;
     public Collider2D zonaSuper;
+    public ParticleSystem particulaFlash;
+    public ParticleSystem particulaSuper;
+    public GameObject uiSuper;
+    public float duracionCongelamiento = 0.3f;
+    public string paramPreSuperAnim = "preSuper";
+    public string paramSuperAnim = "super";
+    public AudioClip audioPreSuper;
+    public AudioClip audioSuper;
+    public float factorMusicaSuper = 0.2f;
 
     private MovimientoBEU movimiento;
     private Animator animator;
@@ -98,12 +105,23 @@ public class GolpeJugador : MonoBehaviour
             superActivo = false;
             golpeSuper = true;
 
-            if (zonaSuper != null)
-                zonaSuper.enabled = true;
+            foreach (Enemigo e in FindObjectsByType<Enemigo>(FindObjectsSortMode.None))
+            {
+                Animator a = e.GetComponentInChildren<Animator>();
+                if (a != null) a.speed = 0f;
+            }
 
-            if (particulaSuper != null) particulaSuper.Play();
-            if (audioSuper != null && SoundManager.instancia != null)
-                SoundManager.instancia.Reproducir(audioSuper);
+            if (particulaFlash != null) particulaFlash.Play();
+            if (audioPreSuper != null && SoundManager.instancia != null)
+                SoundManager.instancia.Reproducir(audioPreSuper);
+            if (uiSuper != null) uiSuper.SetActive(true);
+            if (SoundManager.instancia != null)
+                SoundManager.instancia.BajarMusica(factorMusicaSuper);
+
+            animator.SetTrigger(paramPreSuperAnim);
+
+            StartCoroutine(DescongelarEnemigos());
+            return;
         }
 
         animator.SetInteger(ParamVariante, contadorGolpes);
@@ -113,6 +131,16 @@ public class GolpeJugador : MonoBehaviour
 
         Invoke(nameof(AplicarGolpe), duracionGolpe * 0.5f);
         Invoke(nameof(FinGolpe), duracionGolpe);
+    }
+
+    System.Collections.IEnumerator DescongelarEnemigos()
+    {
+        yield return new WaitForSecondsRealtime(duracionCongelamiento);
+        foreach (Enemigo e in FindObjectsByType<Enemigo>(FindObjectsSortMode.None))
+        {
+            Animator a = e.GetComponentInChildren<Animator>();
+            if (a != null) a.speed = 1f;
+        }
     }
 
     void MirarAlEnemigo()
@@ -173,6 +201,27 @@ public class GolpeJugador : MonoBehaviour
             SoundManager.instancia.Reproducir(audioGolpe);
     }
 
+    public void FinPreSuper()
+    {
+        if (uiSuper != null)
+            uiSuper.SetActive(false);
+
+        if (audioSuper != null && SoundManager.instancia != null)
+            SoundManager.instancia.Reproducir(audioSuper);
+
+        animator.SetTrigger(paramSuperAnim);
+    }
+
+    public void EventoSuperGolpe()
+    {
+        if (zonaSuper != null)
+            zonaSuper.enabled = true;
+
+        if (particulaSuper != null) particulaSuper.Play();
+
+        AplicarGolpe();
+    }
+
     public void AplicarGolpe()
     {
         if (golpeSuper)
@@ -201,9 +250,13 @@ public class GolpeJugador : MonoBehaviour
     {
         if (zonaSuper != null)
             zonaSuper.enabled = false;
+        if (SoundManager.instancia != null)
+            SoundManager.instancia.RestaurarMusica();
+        animator.ResetTrigger(ParamGolpe);
+        animator.ResetTrigger(paramPreSuperAnim);
+        animator.ResetTrigger(paramSuperAnim);
         golpeando = false;
         movimiento.atacando = false;
-        animator.ResetTrigger(ParamGolpe);
     }
 
     void OnTriggerEnter2D(Collider2D other)
