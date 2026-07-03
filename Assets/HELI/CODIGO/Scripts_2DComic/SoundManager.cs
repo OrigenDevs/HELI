@@ -89,4 +89,21 @@ public class SoundManager : MonoBehaviour
     {
         fuenteMusica.volume = volumenMusicaOriginal;
     }
+
+    public void EstablecerMusica(AudioClip[] nuevaLista, bool reiniciar = true)
+    {
+        musicaFondo = nuevaLista;
+        if (reiniciar && musicaFondo.Length > 0)
+        {
+            indiceMusica = aleatorio ? Random.Range(0, musicaFondo.Length) : 0;
+            ReproducirMusica(indiceMusica);
+        }
+    }
+
+    public void DetenerMusica()
+    {
+        CancelInvoke(nameof(SiguienteCancion));
+        fuenteMusica.Stop();
+        fuenteMusica.clip = null;
+    }
 }

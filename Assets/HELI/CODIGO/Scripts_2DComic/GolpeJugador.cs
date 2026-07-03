@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(MovimientoBEU))]
 [RequireComponent(typeof(Animator))]
@@ -24,6 +25,8 @@ public class GolpeJugador : MonoBehaviour
     public ParticleSystem particulaFlash;
     public ParticleSystem particulaSuper;
     public GameObject uiSuper;
+    public Slider sliderSuper;
+    public float sliderVelocidad = 3f;
     public float duracionCongelamiento = 0.3f;
     public string paramPreSuperAnim = "preSuper";
     public string paramSuperAnim = "super";
@@ -35,8 +38,20 @@ public class GolpeJugador : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private Collider2D zonaGolpe;
+    private AudioSource fuenteSuper;
+    private Vector3 posicionSuperOriginal;
+    private Vector3 posicionFlashOriginal;
+    private Vector3 escalaFlashOriginal;
+    private float flipXFlashOriginal;
+    private Vector3 posicionUiSuperOriginal;
+    private Vector3 escalaUiSuperOriginal;
+    private Vector3 posicionParticulaSuperOriginal;
+    private Vector3 escalaParticulaSuperOriginal;
+    private float flipXParticulaSuperOriginal;
     private bool golpeando;
     private bool golpeSuper;
+    private float dirXCongelado;
+    private float sliderTarget;
     private int contadorGolpes;
     private int enemigosDerrotados;
     private bool superActivo;
@@ -66,13 +81,44 @@ public class GolpeJugador : MonoBehaviour
         zonaGolpe.isTrigger = true;
 
         if (zonaSuper != null)
+        {
             zonaSuper.enabled = false;
+            posicionSuperOriginal = zonaSuper.transform.localPosition;
+        }
+
+        fuenteSuper = gameObject.AddComponent<AudioSource>();
+        fuenteSuper.playOnAwake = false;
+
+        if (particulaFlash != null)
+        {
+            posicionFlashOriginal = particulaFlash.transform.localPosition;
+            escalaFlashOriginal = particulaFlash.transform.localScale;
+            flipXFlashOriginal = particulaFlash.GetComponent<ParticleSystemRenderer>().flip.x;
+        }
+        if (particulaSuper != null)
+        {
+            posicionParticulaSuperOriginal = particulaSuper.transform.localPosition;
+            escalaParticulaSuperOriginal = particulaSuper.transform.localScale;
+            flipXParticulaSuperOriginal = particulaSuper.GetComponent<ParticleSystemRenderer>().flip.x;
+        }
+        if (uiSuper != null)
+        {
+            posicionUiSuperOriginal = uiSuper.transform.localPosition;
+            escalaUiSuperOriginal = uiSuper.transform.localScale;
+        }
+
+        if (sliderSuper != null)
+        {
+            sliderSuper.value = 0f;
+            sliderTarget = 0f;
+        }
     }
 
     void SumarDerrota()
     {
         if (golpeSuper) return;
         enemigosDerrotados++;
+        sliderTarget = (float)enemigosDerrotados / enemigosParaSuper;
         if (enemigosDerrotados >= enemigosParaSuper)
         {
             superActivo = true;
@@ -82,6 +128,9 @@ public class GolpeJugador : MonoBehaviour
 
     void Update()
     {
+        if (sliderSuper != null)
+            sliderSuper.value = Mathf.Lerp(sliderSuper.value, sliderTarget, Time.deltaTime * sliderVelocidad);
+
         if (golpeando) return;
 
         if (enemigoEnRango != null)
@@ -104,6 +153,7 @@ public class GolpeJugador : MonoBehaviour
         {
             superActivo = false;
             golpeSuper = true;
+            if (sliderSuper != null) sliderTarget = 0f;
 
             foreach (Enemigo e in FindObjectsByType<Enemigo>(FindObjectsSortMode.None))
             {
@@ -111,15 +161,53 @@ public class GolpeJugador : MonoBehaviour
                 if (a != null) a.speed = 0f;
             }
 
-            if (particulaFlash != null) particulaFlash.Play();
+            float dirX = ObtenerDireccionFlipeada();
+            dirXCongelado = dirX;
+
+            if (zonaSuper != null)
+                zonaSuper.transform.localPosition = new Vector2(
+                    Mathf.Abs(posicionSuperOriginal.x) * dirX,
+                    posicionSuperOriginal.y
+                );
+
+            if (particulaFlash != null)
+            {
+                Transform pt = particulaFlash.transform;
+                pt.localPosition = new Vector2(
+                    Mathf.Abs(posicionFlashOriginal.x) * dirX,
+                    posicionFlashOriginal.y
+                );
+                pt.localScale = new Vector3(
+                    Mathf.Abs(escalaFlashOriginal.x) * dirX,
+                    escalaFlashOriginal.y,
+                    escalaFlashOriginal.z
+                );
+                SetFlipXRecursivo(particulaFlash, dirX > 0f ? flipXFlashOriginal : 0f);
+                particulaFlash.Play();
+            }
+
             if (audioPreSuper != null && SoundManager.instancia != null)
                 SoundManager.instancia.Reproducir(audioPreSuper);
-            if (uiSuper != null) uiSuper.SetActive(true);
+
+            if (uiSuper != null)
+            {
+                Transform ut = uiSuper.transform;
+                ut.localPosition = new Vector2(
+                    Mathf.Abs(posicionUiSuperOriginal.x) * -dirX,
+                    posicionUiSuperOriginal.y
+                );
+                ut.localScale = new Vector3(
+                    Mathf.Abs(ut.localScale.x) * dirX,
+                    ut.localScale.y,
+                    ut.localScale.z
+                );
+                uiSuper.SetActive(true);
+            }
+
             if (SoundManager.instancia != null)
                 SoundManager.instancia.BajarMusica(factorMusicaSuper);
 
             animator.SetTrigger(paramPreSuperAnim);
-
             StartCoroutine(DescongelarEnemigos());
             return;
         }
@@ -133,6 +221,12 @@ public class GolpeJugador : MonoBehaviour
         Invoke(nameof(FinGolpe), duracionGolpe);
     }
 
+    float ObtenerDireccionFlipeada()
+    {
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        return sr != null && sr.flipX ? -1f : 1f;
+    }
+
     System.Collections.IEnumerator DescongelarEnemigos()
     {
         yield return new WaitForSecondsRealtime(duracionCongelamiento);
@@ -141,6 +235,12 @@ public class GolpeJugador : MonoBehaviour
             Animator a = e.GetComponentInChildren<Animator>();
             if (a != null) a.speed = 1f;
         }
+    }
+
+    void SetFlipXRecursivo(ParticleSystem ps, float flipX)
+    {
+        foreach (ParticleSystemRenderer r in ps.GetComponentsInChildren<ParticleSystemRenderer>())
+            r.flip = new Vector3(flipX, r.flip.y, r.flip.z);
     }
 
     void MirarAlEnemigo()
@@ -178,9 +278,7 @@ public class GolpeJugador : MonoBehaviour
     {
         if (particulaGolpe == null) return;
 
-        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-        float dirX = sr != null && sr.flipX ? -1f : 1f;
-
+        float dirX = ObtenerDireccionFlipeada();
         Transform pt = particulaGolpe.transform;
         pt.localPosition = new Vector3(
             Mathf.Abs(pt.localPosition.x) * dirX,
@@ -206,8 +304,27 @@ public class GolpeJugador : MonoBehaviour
         if (uiSuper != null)
             uiSuper.SetActive(false);
 
-        if (audioSuper != null && SoundManager.instancia != null)
-            SoundManager.instancia.Reproducir(audioSuper);
+        if (audioSuper != null)
+        {
+            fuenteSuper.clip = audioSuper;
+            fuenteSuper.Play();
+        }
+
+        if (particulaSuper != null)
+        {
+            Transform pt = particulaSuper.transform;
+            pt.localPosition = new Vector3(
+                Mathf.Abs(posicionParticulaSuperOriginal.x) * dirXCongelado,
+                posicionParticulaSuperOriginal.y,
+                posicionParticulaSuperOriginal.z
+            );
+            pt.localScale = new Vector3(
+                Mathf.Abs(escalaParticulaSuperOriginal.x) * dirXCongelado,
+                escalaParticulaSuperOriginal.y,
+                escalaParticulaSuperOriginal.z
+            );
+            SetFlipXRecursivo(particulaSuper, dirXCongelado > 0f ? flipXParticulaSuperOriginal : 0f);
+        }
 
         animator.SetTrigger(paramSuperAnim);
     }
@@ -216,9 +333,8 @@ public class GolpeJugador : MonoBehaviour
     {
         if (zonaSuper != null)
             zonaSuper.enabled = true;
-
-        if (particulaSuper != null) particulaSuper.Play();
-
+        if (particulaSuper != null)
+            particulaSuper.Play();
         AplicarGolpe();
     }
 
@@ -248,15 +364,51 @@ public class GolpeJugador : MonoBehaviour
 
     public void FinGolpe()
     {
+        fuenteSuper.Stop();
+        fuenteSuper.clip = null;
+
         if (zonaSuper != null)
             zonaSuper.enabled = false;
+
+        if (uiSuper != null)
+        {
+            uiSuper.transform.localPosition = posicionUiSuperOriginal;
+            uiSuper.transform.localScale = escalaUiSuperOriginal;
+        }
+
         if (SoundManager.instancia != null)
             SoundManager.instancia.RestaurarMusica();
+
         animator.ResetTrigger(ParamGolpe);
         animator.ResetTrigger(paramPreSuperAnim);
         animator.ResetTrigger(paramSuperAnim);
         golpeando = false;
         movimiento.atacando = false;
+
+        StartCoroutine(RestaurarParticulasAlMorir());
+    }
+
+    System.Collections.IEnumerator RestaurarParticulasAlMorir()
+    {
+        if (particulaFlash != null)
+            while (particulaFlash.IsAlive()) yield return null;
+        if (particulaSuper != null)
+            while (particulaSuper.IsAlive()) yield return null;
+
+        if (zonaSuper != null)
+            zonaSuper.transform.localPosition = posicionSuperOriginal;
+        if (particulaFlash != null)
+        {
+            particulaFlash.transform.localPosition = posicionFlashOriginal;
+            particulaFlash.transform.localScale = escalaFlashOriginal;
+            SetFlipXRecursivo(particulaFlash, flipXFlashOriginal);
+        }
+        if (particulaSuper != null)
+        {
+            particulaSuper.transform.localPosition = posicionParticulaSuperOriginal;
+            particulaSuper.transform.localScale = escalaParticulaSuperOriginal;
+            SetFlipXRecursivo(particulaSuper, flipXParticulaSuperOriginal);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

@@ -28,4 +28,18 @@ public class TriggerZone : MonoBehaviour
         foreach (var obj in objetosDesaparecer)
             if (obj != null) obj.SetActive(false);
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (activado) return;
+        if (!other.CompareTag("Player")) return;
+
+        activado = true;
+
+        foreach (var obj in objetosAparecer)
+            if (obj != null) obj.SetActive(true);
+
+        foreach (var obj in objetosDesaparecer)
+            if (obj != null) obj.SetActive(false);
+    }
 }
