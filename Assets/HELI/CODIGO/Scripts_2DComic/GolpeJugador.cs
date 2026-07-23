@@ -33,6 +33,7 @@ public class GolpeJugador : MonoBehaviour
     public AudioClip audioPreSuper;
     public AudioClip audioSuper;
     public float factorMusicaSuper = 0.2f;
+    public float tiempoUISuper = 1f;
 
     private MovimientoBEU movimiento;
     private Animator animator;
@@ -57,6 +58,7 @@ public class GolpeJugador : MonoBehaviour
     private bool superActivo;
     private Enemigo enemigoEnRango;
     private CamaraSigue camara;
+    private Coroutine corutinaOcultarUI;
     private static readonly int ParamGolpe = Animator.StringToHash("golpe");
     private static readonly int ParamVariante = Animator.StringToHash("golpeVariante");
 
@@ -151,6 +153,12 @@ public class GolpeJugador : MonoBehaviour
 
         if (superActivo)
         {
+            if (corutinaOcultarUI != null)
+            {
+                StopCoroutine(corutinaOcultarUI);
+                corutinaOcultarUI = null;
+            }
+
             superActivo = false;
             golpeSuper = true;
             if (sliderSuper != null) sliderTarget = 0f;
@@ -302,7 +310,11 @@ public class GolpeJugador : MonoBehaviour
     public void FinPreSuper()
     {
         if (uiSuper != null)
-            uiSuper.SetActive(false);
+        {
+            if (corutinaOcultarUI != null)
+                StopCoroutine(corutinaOcultarUI);
+            corutinaOcultarUI = StartCoroutine(OcultarUISuper());
+        }
 
         if (audioSuper != null)
         {
@@ -327,6 +339,18 @@ public class GolpeJugador : MonoBehaviour
         }
 
         animator.SetTrigger(paramSuperAnim);
+    }
+
+    System.Collections.IEnumerator OcultarUISuper()
+    {
+        yield return new WaitForSeconds(tiempoUISuper);
+        if (uiSuper != null)
+        {
+            uiSuper.transform.localPosition = posicionUiSuperOriginal;
+            uiSuper.transform.localScale = escalaUiSuperOriginal;
+            uiSuper.SetActive(false);
+        }
+        corutinaOcultarUI = null;
     }
 
     public void EventoSuperGolpe()
@@ -370,7 +394,7 @@ public class GolpeJugador : MonoBehaviour
         if (zonaSuper != null)
             zonaSuper.enabled = false;
 
-        if (uiSuper != null)
+        if (uiSuper != null && corutinaOcultarUI == null)
         {
             uiSuper.transform.localPosition = posicionUiSuperOriginal;
             uiSuper.transform.localScale = escalaUiSuperOriginal;

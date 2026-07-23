@@ -17,7 +17,7 @@ public class SoundManager : MonoBehaviour
         if (instancia == null)
         {
             instancia = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject.transform.root.gameObject);
         }
         else
         {
