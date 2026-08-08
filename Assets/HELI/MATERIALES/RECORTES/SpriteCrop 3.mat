@@ -94,7 +94,7 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _CropBottom: 0.1
+    - _CropBottom: 0.174
     - _CropLeft: 0
     - _CropRight: 0
     - _CropScale: 1
