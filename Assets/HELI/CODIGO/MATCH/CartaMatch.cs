@@ -48,6 +48,22 @@ public class CartaMatch : MonoBehaviour
         if (resaltado != null) resaltado.gameObject.SetActive(mostrar);
     }
 
+    public void ColorResaltado(Color color)
+    {
+        Transform resaltado = !string.IsNullOrEmpty(nombreResaltado) ? transform.Find(nombreResaltado) : null;
+        if (resaltado == null) return;
+
+        SpriteRenderer sr = resaltado.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.color = color;
+            return;
+        }
+
+        UnityEngine.UI.Image img = resaltado.GetComponent<UnityEngine.UI.Image>();
+        if (img != null) img.color = color;
+    }
+
     IEnumerator AnimarVolteo()
     {
         Quaternion cerrada = Quaternion.Euler(90f, 0f, 0f);

@@ -20,6 +20,20 @@ public class MatchCards : MonoBehaviour
     public float tiempoEspera = 0.6f;
     public float tiempoMuestra = 0.8f;
 
+    [Header("HUD")]
+    public MatchHUD hud;
+    public PanelVictoria panelVictoria;
+
+    [Header("Colores de resaltado")]
+    public Color colorP1 = Color.cyan;
+    public Color colorP2 = Color.magenta;
+
+    [Header("Turnos")]
+    public int jugadores = 1;
+    public int turnoActual { get; private set; }
+
+    private int[] puntuaciones = new int[2];
+
     public UnityEvent onVictoria;
 
     public Transform[,] cartas;
@@ -28,12 +42,35 @@ public class MatchCards : MonoBehaviour
     private CartaMatch segunda;
     private bool comprobando;
     private int paresEncontrados;
+    private int intentos;
+    private CartaMatch cartaResaltada;
 
     public Vector2Int TamanoGrid => new Vector2Int(filas, columnas);
 
+    public int Puntuacion(int jugador) => puntuaciones[jugador];
+
+    public int Intentos => intentos;
+
+    public int Ganador()
+    {
+        if (puntuaciones[0] == puntuaciones[1]) return 0;
+        return puntuaciones[0] > puntuaciones[1] ? 0 : 1;
+    }
+
     void Start()
     {
+        jugadores = Mathf.Clamp(MenuInicioMatch.cantidadJugadores, 1, 2);
         CrearTablero();
+        if (hud != null)
+        {
+            hud.ConfigurarModo(jugadores);
+            if (jugadores > 1)
+                hud.ActualizarTurno(turnoActual);
+            else
+                hud.ActualizarIntentos(intentos);
+            hud.ActualizarPuntos(0, 0);
+            hud.ActualizarPuntos(1, 0);
+        }
     }
 
     [ContextMenu("Crear Tablero")]
@@ -112,7 +149,26 @@ public class MatchCards : MonoBehaviour
         if (t == null) return;
 
         CartaMatch carta = t.GetComponent<CartaMatch>();
-        if (carta != null) carta.MostrarResaltado(mostrar);
+        if (carta == null) return;
+
+        if (mostrar)
+        {
+            cartaResaltada = carta;
+            carta.MostrarResaltado(true);
+            AplicarColorResaltado();
+        }
+        else if (cartaResaltada == carta)
+        {
+            cartaResaltada = null;
+            carta.MostrarResaltado(false);
+        }
+    }
+
+    public void AplicarColorResaltado()
+    {
+        if (cartaResaltada == null) return;
+        Color color = turnoActual == 0 ? colorP1 : colorP2;
+        cartaResaltada.ColorResaltado(color);
     }
 
     public void Seleccionar(Vector2Int coord)
@@ -143,19 +199,40 @@ public class MatchCards : MonoBehaviour
     {
         yield return new WaitForSeconds(tiempoEspera);
 
+        intentos++;
+        if (hud != null && jugadores == 1)
+            hud.ActualizarIntentos(intentos);
+
         if (primera.spriteCara == segunda.spriteCara)
         {
             primera.Emparejar();
             segunda.Emparejar();
             paresEncontrados++;
+            puntuaciones[turnoActual]++;
+            if (hud != null) hud.ActualizarPuntos(turnoActual, puntuaciones[turnoActual]);
             if (paresEncontrados >= filas * columnas / 2)
+            {
+                if (hud != null && jugadores == 1) hud.DetenerCronometro();
+                if (panelVictoria != null) panelVictoria.MostrarVictoria();
+                primera = null;
+                segunda = null;
+                comprobando = false;
                 onVictoria.Invoke();
+                yield break;
+            }
         }
         else
         {
             yield return new WaitForSeconds(tiempoMuestra);
             primera.Voltear();
             segunda.Voltear();
+
+            if (jugadores > 1)
+            {
+                turnoActual = 1 - turnoActual;
+                if (hud != null) hud.ActualizarTurno(turnoActual);
+                AplicarColorResaltado();
+            }
         }
 
         primera = null;
@@ -207,5 +284,9 @@ public class MatchCards : MonoBehaviour
         segunda = null;
         comprobando = false;
         paresEncontrados = 0;
+        intentos = 0;
+        turnoActual = 0;
+        puntuaciones[0] = 0;
+        puntuaciones[1] = 0;
     }
 }
