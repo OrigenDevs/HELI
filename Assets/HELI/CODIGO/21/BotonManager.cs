@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,9 +11,16 @@ public class BotonManager : MonoBehaviour
     [Header("Escala al seleccionar")]
     public float escalaSeleccionado = 1.15f;
 
+    [Header("Animacion de eco")]
+    [Tooltip("Activa un pulso de escala repetido en el boton seleccionado.")]
+    public bool animacionEco = false;
+    public float intensidadEco = 0.05f;
+    public float velocidadEco = 6f;
+
     private Vector3[] escalasOriginales;
     private Color[] coloresOriginales;
     private bool inicializado = false;
+    private Coroutine corrutinaEco;
 
     void Awake()
     {
@@ -25,7 +33,7 @@ public class BotonManager : MonoBehaviour
         StartCoroutine(SeleccionarPrimerBoton());
     }
 
-    private System.Collections.IEnumerator SeleccionarPrimerBoton()
+    private IEnumerator SeleccionarPrimerBoton()
     {
         yield return null;
         if (EventSystem.current == null || botones[0] == null) yield break;
@@ -86,15 +94,44 @@ public class BotonManager : MonoBehaviour
                 botones[i].colors = colors;
             }
         }
+
+        if (animacionEco)
+        {
+            if (corrutinaEco != null) StopCoroutine(corrutinaEco);
+            corrutinaEco = StartCoroutine(AnimacionEco(index));
+        }
+
+        BotonEventosUI eventos = botones[index].GetComponent<BotonEventosUI>();
+        if (eventos != null) eventos.onEntrar.Invoke();
     }
 
     private void OnDeseleccionado(int index)
     {
         if (index < 0 || index >= botones.Length || botones[index] == null) return;
 
-        botones[index].transform.localScale = escalasOriginales[index];
+        if (animacionEco && corrutinaEco != null)
+        {
+            StopCoroutine(corrutinaEco);
+            corrutinaEco = null;
+            botones[index].transform.localScale = escalasOriginales[index];
+        }
+
         var colors = botones[index].colors;
         colors.normalColor = coloresOriginales[index];
         botones[index].colors = colors;
+
+        BotonEventosUI eventos = botones[index].GetComponent<BotonEventosUI>();
+        if (eventos != null) eventos.onSalir.Invoke();
+    }
+
+    private IEnumerator AnimacionEco(int index)
+    {
+        while (true)
+        {
+            float pulso = Mathf.Sin(Time.time * velocidadEco) * intensidadEco;
+            if (botones[index] != null)
+                botones[index].transform.localScale = escalasOriginales[index] * (escalaSeleccionado + pulso);
+            yield return null;
+        }
     }
 }
