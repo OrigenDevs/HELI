@@ -7,6 +7,8 @@ public class CartaMatch : MonoBehaviour
     public string nombreCara = "Cara";
     public string nombreReverso = "Reverso";
     public string nombreResaltado = "Outline";
+    [Tooltip("Nombre del hijo que contiene el ParticleSystem del match.")]
+    public string nombreParticula = "Particula";
 
     [Header("Volteo")]
     public float tiempoVolteo = 0.45f;
@@ -40,6 +42,43 @@ public class CartaMatch : MonoBehaviour
     public void Emparejar()
     {
         emparejada = true;
+    }
+
+    public void ReproducirParticula()
+    {
+        Transform particula = !string.IsNullOrEmpty(nombreParticula) ? transform.Find(nombreParticula) : null;
+        if (particula == null) return;
+
+        ParticleSystem ps = particula.GetComponent<ParticleSystem>();
+        if (ps != null) ps.Play();
+    }
+
+    public IEnumerator Levantar(float factorAltura, float duracion)
+    {
+        Vector3 escalaBase = transform.localScale;
+        float yObjetivo = escalaBase.y * factorAltura;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duracion;
+            float suavizado = Mathf.SmoothStep(0f, 1f, t);
+            transform.localScale = new Vector3(escalaBase.x, Mathf.Lerp(escalaBase.y, yObjetivo, suavizado), escalaBase.z);
+            yield return null;
+        }
+
+        transform.localScale = new Vector3(escalaBase.x, yObjetivo, escalaBase.z);
+
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duracion;
+            float suavizado = Mathf.SmoothStep(0f, 1f, t);
+            transform.localScale = new Vector3(escalaBase.x, Mathf.Lerp(yObjetivo, escalaBase.y, suavizado), escalaBase.z);
+            yield return null;
+        }
+
+        transform.localScale = escalaBase;
     }
 
     public void MostrarResaltado(bool mostrar)

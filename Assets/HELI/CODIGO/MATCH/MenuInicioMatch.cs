@@ -9,6 +9,7 @@ public class MenuInicioMatch : MonoBehaviour
     [Header("Juego")]
     public MatchCards matchCards;
     public MatchNavegacion navegacion;
+    public ContadorInicio contador;
 
     public UnityEvent onJuegoIniciado;
 
@@ -35,9 +36,14 @@ public class MenuInicioMatch : MonoBehaviour
     void Iniciar()
     {
         if (matchCards != null) matchCards.enabled = true;
-        if (navegacion != null) navegacion.enabled = true;
+        if (navegacion != null) navegacion.enabled = false;
 
         if (panelInicio != null) panelInicio.SetActive(false);
+
+        if (contador != null)
+            contador.Iniciar();
+        else if (navegacion != null)
+            navegacion.enabled = true;
 
         onJuegoIniciado.Invoke();
     }

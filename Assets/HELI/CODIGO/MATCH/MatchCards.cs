@@ -27,10 +27,19 @@ public class MatchCards : MonoBehaviour
     [Header("Colores de resaltado")]
     public Color colorP1 = Color.cyan;
     public Color colorP2 = Color.magenta;
+    public Color colorEmparejado = Color.green;
+
+    [Header("Feedback de match")]
+    public GameObject textoMatch;
+    public float duracionTextoMatch = 0.8f;
+    public float factorAlturaLevantar = 1.3f;
+    public float duracionLevantar = 0.25f;
 
     [Header("Turnos")]
     public int jugadores = 1;
     public int turnoActual { get; private set; }
+    public float duracionTransicionTurno = 0.8f;
+    public bool inputBloqueado { get; private set; }
 
     private int[] puntuaciones = new int[2];
 
@@ -38,11 +47,15 @@ public class MatchCards : MonoBehaviour
 
     public Transform[,] cartas;
 
+    [Header("Racha")]
+    public int rachaMinima = 3;
+
     private CartaMatch primera;
     private CartaMatch segunda;
     private bool comprobando;
     private int paresEncontrados;
     private int intentos;
+    private int[] rachas = new int[2];
     private CartaMatch cartaResaltada;
 
     public Vector2Int TamanoGrid => new Vector2Int(filas, columnas);
@@ -143,6 +156,14 @@ public class MatchCards : MonoBehaviour
         return cartas[coord.x, coord.y];
     }
 
+    public bool CartaEmparejada(Vector2Int coord)
+    {
+        Transform t = CartaEn(coord);
+        if (t == null) return false;
+        CartaMatch carta = t.GetComponent<CartaMatch>();
+        return carta != null && carta.emparejada;
+    }
+
     public void Resaltar(Vector2Int coord, bool mostrar)
     {
         Transform t = CartaEn(coord);
@@ -150,6 +171,8 @@ public class MatchCards : MonoBehaviour
 
         CartaMatch carta = t.GetComponent<CartaMatch>();
         if (carta == null) return;
+
+        if (carta.emparejada) return;
 
         if (mostrar)
         {
@@ -209,7 +232,32 @@ public class MatchCards : MonoBehaviour
             segunda.Emparejar();
             paresEncontrados++;
             puntuaciones[turnoActual]++;
-            if (hud != null) hud.ActualizarPuntos(turnoActual, puntuaciones[turnoActual]);
+            rachas[turnoActual]++;
+            if (hud != null)
+            {
+                hud.ActualizarPuntos(turnoActual, puntuaciones[turnoActual]);
+                hud.ActualizarRacha(turnoActual, rachas[turnoActual] >= rachaMinima);
+            }
+
+            if (textoMatch != null)
+            {
+                textoMatch.SetActive(true);
+                StartCoroutine(OcultarTextoMatch());
+            }
+
+            primera.ReproducirParticula();
+            segunda.ReproducirParticula();
+
+            yield return LevantarCartas(primera, segunda);
+
+            primera.MostrarResaltado(true);
+            primera.ColorResaltado(colorEmparejado);
+            segunda.MostrarResaltado(true);
+            segunda.ColorResaltado(colorEmparejado);
+
+            if (cartaResaltada == primera) cartaResaltada = null;
+            if (cartaResaltada == segunda) cartaResaltada = null;
+
             if (paresEncontrados >= filas * columnas / 2)
             {
                 if (hud != null && jugadores == 1) hud.DetenerCronometro();
@@ -227,17 +275,50 @@ public class MatchCards : MonoBehaviour
             primera.Voltear();
             segunda.Voltear();
 
+            rachas[turnoActual] = 0;
+            if (hud != null) hud.ActualizarRacha(turnoActual, false);
+
             if (jugadores > 1)
             {
                 turnoActual = 1 - turnoActual;
-                if (hud != null) hud.ActualizarTurno(turnoActual);
-                AplicarColorResaltado();
+                yield return AnimarTransicionTurno();
             }
         }
 
         primera = null;
         segunda = null;
         comprobando = false;
+    }
+
+    IEnumerator LevantarCartas(CartaMatch a, CartaMatch b)
+    {
+        Coroutine ca = StartCoroutine(a.Levantar(factorAlturaLevantar, duracionLevantar));
+        Coroutine cb = StartCoroutine(b.Levantar(factorAlturaLevantar, duracionLevantar));
+        yield return ca;
+        yield return cb;
+    }
+
+    IEnumerator OcultarTextoMatch()
+    {
+        yield return new WaitForSeconds(duracionTextoMatch);
+        if (textoMatch != null) textoMatch.SetActive(false);
+    }
+
+    public IEnumerator AnimarTransicionTurno()
+    {
+        inputBloqueado = true;
+
+        if (hud != null)
+        {
+            hud.ActualizarTurno(turnoActual);
+            hud.MostrarIndicadorTurno(turnoActual);
+        }
+        AplicarColorResaltado();
+
+        yield return new WaitForSeconds(duracionTransicionTurno);
+
+        if (hud != null) hud.OcultarIndicadorTurno();
+        inputBloqueado = false;
     }
 
     void AsignarCara(GameObject carta, Sprite sprite)
@@ -286,6 +367,14 @@ public class MatchCards : MonoBehaviour
         paresEncontrados = 0;
         intentos = 0;
         turnoActual = 0;
+        inputBloqueado = false;
+        rachas[0] = 0;
+        rachas[1] = 0;
+        if (hud != null)
+        {
+            hud.OcultarIndicadorTurno();
+            hud.OcultarRachas();
+        }
         puntuaciones[0] = 0;
         puntuaciones[1] = 0;
     }
