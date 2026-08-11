@@ -2,15 +2,16 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Rendering; // NECESARIO para interactuar con el componente Volume
+using UnityEngine.Rendering;
 
 public class Menu3DManager : MonoBehaviour
 {
     [Header("Lista de Botones 3D")]
     public MenuButton3D[] botonesMenu;
 
-    [Header("Componente Input System")]
-    public PlayerInput playerInput;
+    [Header("Configuración de Input (New Input System)")]
+    [Tooltip("Puedes arrastrar una referencia de acción o dejarla vacía para que use 'Jump' por defecto.")]
+    public InputActionReference actionJump;
 
     [Header("Configuración de Cámara")]
     public Transform camaraPrincipal;
@@ -43,7 +44,7 @@ public class Menu3DManager : MonoBehaviour
     public AudioClip sfxSeleccionarCarta;
 
     private InputAction navigateAction;
-    private InputAction submitAction;
+    private InputAction jumpActionDinamica;
 
     private int indiceActual = 0;
     private bool controlEjeBloqueado = false;
@@ -59,11 +60,22 @@ public class Menu3DManager : MonoBehaviour
 
     void Awake()
     {
-        if (playerInput != null)
+        // Si no asignas una InputActionReference en el Inspector, creamos una por defecto con Jump (Espacio / Botón Sur)
+        if (actionJump == null || actionJump.action == null)
         {
-            navigateAction = playerInput.actions.FindAction("UI/Navigate");
-            submitAction = playerInput.actions.FindAction("UI/Submit");
+            jumpActionDinamica = new InputAction("JumpActionDefault");
+            jumpActionDinamica.AddBinding("<Keyboard>/space");
+            jumpActionDinamica.AddBinding("<Gamepad>/buttonSouth");
         }
+
+        // Creamos una acción genérica de navegación por teclado/mando para moverse de forma fluida
+        navigateAction = new InputAction("NavigateAction");
+        navigateAction.AddCompositeBinding("2DVector")
+            .With("Up", "<Keyboard>/w")
+            .With("Down", "<Keyboard>/s")
+            .With("Left", "<Keyboard>/a")
+            .With("Right", "<Keyboard>/d");
+        navigateAction.AddBinding("<Gamepad>/leftStick");
 
         if (camaraPrincipal == null && Camera.main != null)
         {
@@ -87,6 +99,36 @@ public class Menu3DManager : MonoBehaviour
         {
             volumenPostProcess.weight = 0f;
         }
+    }
+
+    void OnEnable()
+    {
+        if (actionJump != null && actionJump.action != null && !actionJump.action.enabled)
+            actionJump.action.Enable();
+
+        if (jumpActionDinamica != null)
+            jumpActionDinamica.Enable();
+
+        if (navigateAction != null)
+            navigateAction.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (actionJump != null && actionJump.action != null && actionJump.action.enabled)
+            actionJump.action.Disable();
+
+        if (jumpActionDinamica != null)
+            jumpActionDinamica.Disable();
+
+        if (navigateAction != null)
+            navigateAction.Disable();
+    }
+
+    void OnDestroy()
+    {
+        jumpActionDinamica?.Dispose();
+        navigateAction?.Dispose();
     }
 
     void Start()
@@ -115,7 +157,7 @@ public class Menu3DManager : MonoBehaviour
 
         MoverCamaraSuave();
         ControlarFundidoBlanco();
-        AnimarPesoVolumen(); // <--- Transición del Post Process
+        AnimarPesoVolumen();
     }
 
     private void ManejarInputNavegacion()
@@ -140,9 +182,19 @@ public class Menu3DManager : MonoBehaviour
 
     private void ManejarInputConfirmacion()
     {
-        if (submitAction == null) return;
+        bool triggerAccion = false;
 
-        if (submitAction.WasPerformedThisFrame())
+        // Comprueba si se usó la referencia pública o la interna por defecto
+        if (actionJump != null && actionJump.action != null)
+        {
+            triggerAccion = actionJump.action.triggered;
+        }
+        else if (jumpActionDinamica != null)
+        {
+            triggerAccion = jumpActionDinamica.triggered;
+        }
+
+        if (triggerAccion)
         {
             navegacionBloqueada = true;
 
@@ -153,22 +205,18 @@ public class Menu3DManager : MonoBehaviour
 
             ReproducirSonido(sfxSeleccionarCarta);
 
-            // ACTIVACIÓN: Activamos el flash, el post-process y disparamos la intensidad del shake
             targetOpacidadFlash = 1f;
             targetPesoVolumen = 1f;
-            shakeActual = intensidadShake; // <-- Comienza el temblor aquí
+            shakeActual = intensidadShake;
 
-            Debug.Log("Confirmado: Ejecutando Onda de Choque en Cámara.");
+            Debug.Log("Confirmado con Action Jump: Ejecutando Onda de Choque en Cámara.");
         }
     }
-
-  
 
     private void AnimarPesoVolumen()
     {
         if (volumenPostProcess == null || !navegacionBloqueada) return;
 
-        // Subimos linealmente el peso hacia el target (1f)
         pesoVolumenActual = Mathf.MoveTowards(pesoVolumenActual, targetPesoVolumen, Time.deltaTime * velocidadSubidaVolumen);
         volumenPostProcess.weight = pesoVolumenActual;
     }
@@ -226,13 +274,9 @@ public class Menu3DManager : MonoBehaviour
     {
         if (camaraPrincipal == null) return;
 
-        // 1. Calculamos el temblor de forma independiente si está activo
         if (shakeActual > 0.001f)
         {
-            // Generamos un desfase aleatorio en una esfera pequeña 3D multiplicado por la intensidad actual
             offsetShake = Random.insideUnitSphere * shakeActual;
-
-            // Reducimos linealmente la fuerza del temblor frame a frame para que se apague suave
             shakeActual = Mathf.MoveTowards(shakeActual, 0f, Time.deltaTime * disipacionShake);
         }
         else
@@ -240,10 +284,7 @@ public class Menu3DManager : MonoBehaviour
             offsetShake = Vector3.zero;
         }
 
-        // 2. Interpolamos la posición base de la cámara hacia el botón como siempre
         Vector3 posicionBaseLerp = Vector3.Lerp(camaraPrincipal.position - offsetShake, posicionObjetivoCamara, Time.deltaTime * suavizadoCamara);
-
-        // 3. Aplicamos la posición final sumándole el offset del temblor
         camaraPrincipal.position = posicionBaseLerp + offsetShake;
     }
 

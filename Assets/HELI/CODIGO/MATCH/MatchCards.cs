@@ -20,6 +20,13 @@ public class MatchCards : MonoBehaviour
     public float tiempoEspera = 0.6f;
     public float tiempoMuestra = 0.8f;
 
+    [Header("Movimiento")]
+    [Tooltip("Si esta activado, el cursor puede pasar sobre las cartas emparejadas/bloqueadas y moverse con total libertad.")]
+    public bool pasarSobreEmparejadas = false;
+
+    [Header("Sonidos")]
+    public AudioClip sonidoBloqueada;
+
     [Header("HUD")]
     public MatchHUD hud;
     public PanelVictoria panelVictoria;
@@ -164,6 +171,12 @@ public class MatchCards : MonoBehaviour
         return carta != null && carta.emparejada;
     }
 
+    public void ReproducirSonidoBloqueada()
+    {
+        if (sonidoBloqueada != null && SoundManager.instancia != null)
+            SoundManager.instancia.Reproducir(sonidoBloqueada);
+    }
+
     public void Resaltar(Vector2Int coord, bool mostrar)
     {
         Transform t = CartaEn(coord);
@@ -172,7 +185,7 @@ public class MatchCards : MonoBehaviour
         CartaMatch carta = t.GetComponent<CartaMatch>();
         if (carta == null) return;
 
-        if (carta.emparejada) return;
+        if (carta.emparejada && !pasarSobreEmparejadas) return;
 
         if (mostrar)
         {
@@ -183,7 +196,10 @@ public class MatchCards : MonoBehaviour
         else if (cartaResaltada == carta)
         {
             cartaResaltada = null;
-            carta.MostrarResaltado(false);
+            if (carta.emparejada)
+                carta.ColorResaltado(colorEmparejado);
+            else
+                carta.MostrarResaltado(false);
         }
     }
 
@@ -203,7 +219,12 @@ public class MatchCards : MonoBehaviour
 
         CartaMatch carta = t.GetComponent<CartaMatch>();
         if (carta == null) return;
-        if (carta.volteada || carta.emparejada) return;
+        if (carta.volteada) return;
+        if (carta.emparejada)
+        {
+            ReproducirSonidoBloqueada();
+            return;
+        }
 
         carta.Voltear();
 

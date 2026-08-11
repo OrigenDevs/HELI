@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class BotonManager : MonoBehaviour
 {
@@ -21,16 +22,78 @@ public class BotonManager : MonoBehaviour
     private Color[] coloresOriginales;
     private bool inicializado = false;
     private Coroutine corrutinaEco;
+    private InputAction accionJumpInterna;
 
     void Awake()
     {
+        // Crea la acción por código apuntando directamente a "Jump" del mapa por defecto (Keyboard & Mouse / Gamepad)
+        accionJumpInterna = new InputAction("JumpAction", binding: "*/{PrimaryAction}");
+        // O si prefieres mapearlo directo al espacio/botón de salto estándar:
+        // accionJumpInterna.AddBinding("<Keyboard>/space");
+        // accionJumpInterna.AddBinding("<Gamepad>/buttonSouth");
+
+        // Alternativa robusta buscando el enlace estándar de Jump:
+        accionJumpInterna.AddBinding("<Keyboard>/space");
+        accionJumpInterna.AddBinding("<Gamepad>/buttonSouth");
+
         Inicializar();
     }
 
     void OnEnable()
     {
+        if (accionJumpInterna != null)
+            accionJumpInterna.Enable();
+
         if (!inicializado || botones == null || botones.Length == 0) return;
         StartCoroutine(SeleccionarPrimerBoton());
+    }
+
+    void OnDisable()
+    {
+        if (accionJumpInterna != null)
+            accionJumpInterna.Disable();
+    }
+
+    void OnDestroy()
+    {
+        accionJumpInterna?.Dispose();
+    }
+
+    void Update()
+    {
+        if (DetectarSaltoPresionado())
+        {
+            SimularClickBotonSeleccionado();
+        }
+    }
+
+    private bool DetectarSaltoPresionado()
+    {
+        if (accionJumpInterna != null)
+        {
+            return accionJumpInternalTriggered();
+        }
+        return false;
+    }
+
+    private bool accionJumpInternalTriggered()
+    {
+        return accionJumpInterna.triggered;
+    }
+
+    private void SimularClickBotonSeleccionado()
+    {
+        if (EventSystem.current == null) return;
+
+        GameObject objetoActual = EventSystem.current.currentSelectedGameObject;
+        if (objetoActual != null)
+        {
+            Button botonActual = objetoActual.GetComponent<Button>();
+            if (botonActual != null && botonActual.interactable)
+            {
+                botonActual.onClick.Invoke();
+            }
+        }
     }
 
     private IEnumerator SeleccionarPrimerBoton()

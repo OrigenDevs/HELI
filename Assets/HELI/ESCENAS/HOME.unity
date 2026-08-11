@@ -1187,8 +1187,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuButton3D
   puntoCamara: {fileID: 779167944}
   modeloVisual: {fileID: 779167944}
-  escalaNormal: {x: 1.01266, y: 1, z: 1.5}
-  escalaSeleccionado: {x: 1.215192, y: 1, z: 1.8}
+  escalaNormal: {x: 1.139647, y: 1, z: 0.9522067}
+  escalaSeleccionado: {x: 1.19, y: 1, z: 1}
   ghostRenderers:
   - {fileID: 1213334086}
   - {fileID: 729171796}
@@ -1864,7 +1864,7 @@ MonoBehaviour:
   - {fileID: 424567965}
   - {fileID: 142663871}
   - {fileID: 779167940}
-  playerInput: {fileID: 1220905436}
+  actionJump: {fileID: 392368643174621059, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   camaraPrincipal: {fileID: 2080349850}
   suavizadoCamara: 8
   distanciaZ: -12

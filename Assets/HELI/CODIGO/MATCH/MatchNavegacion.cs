@@ -101,6 +101,10 @@ public class MatchNavegacion : MonoBehaviour
         else
             dir = new Vector2Int(input.y > 0f ? 1 : -1, 0);
 
+        Vector2Int adyacente = Envolver(indice + dir, matchCards.TamanoGrid);
+        if (adyacente != indice && matchCards.CartaEmparejada(adyacente) && !matchCards.pasarSobreEmparejadas)
+            matchCards.ReproducirSonidoBloqueada();
+
         Vector2Int? destino = BuscarCartaMasCercana(dir);
         if (destino.HasValue)
         {
@@ -124,7 +128,7 @@ public class MatchNavegacion : MonoBehaviour
         for (int i = 0; i < pasos; i++)
         {
             pos = Envolver(pos + dir, tamano);
-            if (pos != indice && !matchCards.CartaEmparejada(pos))
+            if (pos != indice && (matchCards.pasarSobreEmparejadas || !matchCards.CartaEmparejada(pos)))
                 return pos;
         }
 
@@ -137,7 +141,8 @@ public class MatchNavegacion : MonoBehaviour
             for (int c = 0; c < tamano.y; c++)
             {
                 Vector2Int celda = new Vector2Int(f, c);
-                if (celda == indice || matchCards.CartaEmparejada(celda)) continue;
+                if (celda == indice) continue;
+                if (!matchCards.pasarSobreEmparejadas && matchCards.CartaEmparejada(celda)) continue;
 
                 Vector2Int delta = DeltaEnvolvente(celda, indice, tamano);
                 int avance = delta.x * dir.x + delta.y * dir.y;

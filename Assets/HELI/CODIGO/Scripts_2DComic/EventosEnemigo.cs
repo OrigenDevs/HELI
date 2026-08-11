@@ -47,4 +47,16 @@ public class EventosEnemigo : MonoBehaviour
         EnemigoAtaque a = ObtenerAtaque();
         if (a != null) a.EventoAudio();
     }
+
+    public void Disparar()
+    {
+        JefeFinal j = GetComponentInParent<JefeFinal>();
+        if (j != null) j.Disparar();
+    }
+
+    public void FinAtaque()
+    {
+        JefeFinal j = GetComponentInParent<JefeFinal>();
+        if (j != null) j.FinAtaque();
+    }
 }

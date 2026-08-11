@@ -39,7 +39,7 @@ public class Enemigo : MonoBehaviour
         col = GetComponent<Collider2D>();
     }
 
-    void Start()
+    protected void Start()
     {
         if (animator == null)
             Debug.LogWarning("Enemigo sin Animator. Arrástralo en el campo animator.", this);

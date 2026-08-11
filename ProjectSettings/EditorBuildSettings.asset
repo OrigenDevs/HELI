@@ -12,14 +12,17 @@ EditorBuildSettings:
     path: Assets/HELI/ESCENAS/CARTAS.unity
     guid: cf277bc51b5f726459fa01793066fc4d
   - enabled: 1
-    path: Assets/HELI/ESCENAS/2DComic.unity
-    guid: ee15cb511a8314748be9073e93c8d9df
-  - enabled: 1
     path: Assets/HELI/ESCENAS/3D.unity
     guid: 77b06bc31d560c9488589b1bc009d9e7
   - enabled: 1
-    path: Assets/HELI/ESCENAS/2D.unity
-    guid: e03125d8afaeda14895e80402dd01c94
+    path: Assets/HELI/ESCENAS/2DComic.unity
+    guid: ee15cb511a8314748be9073e93c8d9df
+  - enabled: 1
+    path: Assets/HELI/ESCENAS/2DComic_Escenario02.unity
+    guid: c7cf91f6697300342a9bb8f2005288ca
+  - enabled: 1
+    path: Assets/HELI/ESCENAS/MATCH/MATCHMEMORIA.unity
+    guid: e64eeb708fa7a7149a604a35d67b39d5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
