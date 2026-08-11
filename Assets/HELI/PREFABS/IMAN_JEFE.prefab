@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53e10bdb0f98ae4296880170686f2fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JefeFinal
-  salud: 20
+  salud: 4
   particulasGolpe:
   - {fileID: 7795887435332960996}
   - {fileID: 8788164516855778243}

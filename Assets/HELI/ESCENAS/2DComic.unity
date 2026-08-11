@@ -278,7 +278,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 1246948352}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &8918937
 BoxCollider2D:
@@ -8795,7 +8795,7 @@ MonoBehaviour:
   - {fileID: 257010468}
   - {fileID: 1288690471}
   instantaneo: 0
-  velocidadTraslado: 2
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &801286261
 BoxCollider2D:
@@ -9082,7 +9082,7 @@ Transform:
   m_GameObject: {fileID: 824048594}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.24, y: 0.17259169, z: 0}
+  m_LocalPosition: {x: -2.93, y: 0.133, z: 0}
   m_LocalScale: {x: 0.623424, y: 2.1916473, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9104,7 +9104,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 840848297}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &824048597
 BoxCollider2D:
@@ -10457,7 +10457,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 1873639833}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &976663941
 BoxCollider2D:
@@ -11537,7 +11537,7 @@ Transform:
   m_GameObject: {fileID: 1069586355}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.38, y: 0.11, z: 0}
+  m_LocalPosition: {x: -3.02, y: 0.11, z: 0}
   m_LocalScale: {x: 0.55148, y: 1.88315, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11559,7 +11559,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 394002195}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &1069586358
 BoxCollider2D:
@@ -12413,7 +12413,7 @@ MonoBehaviour:
   - {fileID: 110442454}
   - {fileID: 849491622}
   instantaneo: 0
-  velocidadTraslado: 1.5
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &1104359769
 BoxCollider2D:
@@ -12779,7 +12779,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 406476103}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &1120876682
 BoxCollider2D:
@@ -16640,7 +16640,7 @@ MonoBehaviour:
   - {fileID: 977410801}
   - {fileID: 1071621372}
   instantaneo: 0
-  velocidadTraslado: 1.5
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &1429267763
 BoxCollider2D:
@@ -17419,7 +17419,7 @@ MonoBehaviour:
   - {fileID: 1795301568}
   - {fileID: 1375737862}
   instantaneo: 0
-  velocidadTraslado: 1.5
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &1497595465
 BoxCollider2D:
@@ -18754,7 +18754,7 @@ MonoBehaviour:
   - {fileID: 1892208059}
   - {fileID: 784046154}
   instantaneo: 0
-  velocidadTraslado: 2
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &1570407333
 BoxCollider2D:
@@ -18938,7 +18938,7 @@ MonoBehaviour:
   - {fileID: 561574137}
   - {fileID: 884817609}
   instantaneo: 0
-  velocidadTraslado: 2
+  velocidadTraslado: 4
   zoomCamara: -3
 --- !u!61 &1583850254
 BoxCollider2D:
@@ -19581,7 +19581,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 1778091}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &1669838172
 BoxCollider2D:
@@ -22862,7 +22862,7 @@ Transform:
   m_GameObject: {fileID: 1984653303}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.86, y: 0.04, z: 0}
+  m_LocalPosition: {x: 3.668, y: 0.04, z: 0}
   m_LocalScale: {x: 0.55148, y: 1.88315, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22884,7 +22884,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 1616694337}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &1984653306
 BoxCollider2D:
@@ -23041,7 +23041,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 1413459431}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &1986620381
 BoxCollider2D:
@@ -23380,7 +23380,7 @@ Transform:
   m_GameObject: {fileID: 2012541292}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.49, y: 0.37, z: 0}
+  m_LocalPosition: {x: 3.096, y: 0.37, z: 0}
   m_LocalScale: {x: 0.55148, y: 1.88315, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23402,7 +23402,7 @@ MonoBehaviour:
   ruta:
   - {fileID: 1258189907}
   instantaneo: 0
-  velocidadTraslado: 1
+  velocidadTraslado: 4
   zoomCamara: 0
 --- !u!61 &2012541295
 BoxCollider2D:

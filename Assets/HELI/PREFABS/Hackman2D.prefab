@@ -97,10 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ecc74037001b1846b234f208d6fa250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemigoAtaque
-  dano: 1
+  dano: 0.5
   distanciaAtaque: 0.4
-  cooldownAtaque: 2
-  tiempoRevision: 1
+  cooldownAtaque: 0.3
+  tiempoRevision: 0.2
   paramAtacar: atacar
   zonaAtaque: {fileID: 4435120992940648546}
   audioAtaque: {fileID: 8300000, guid: cd5f92a0d9fd68145bddbf953769bf2b, type: 3}

@@ -316,7 +316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796123cbd9d638947a64c50849895dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
-  salud: 3
+  salud: 2
   particulasGolpe:
   - {fileID: 905598777369506563}
   - {fileID: 6961239523928456405}
@@ -363,10 +363,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ecc74037001b1846b234f208d6fa250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemigoAtaque
-  dano: 1
-  distanciaAtaque: 0.4
-  cooldownAtaque: 2
-  tiempoRevision: 1
+  dano: 0.5
+  distanciaAtaque: 0.5
+  cooldownAtaque: 0.3
+  tiempoRevision: 0.2
   paramAtacar: atacar
   zonaAtaque: {fileID: 628227147372815645}
   audioAtaque: {fileID: 8300000, guid: cd5f92a0d9fd68145bddbf953769bf2b, type: 3}
