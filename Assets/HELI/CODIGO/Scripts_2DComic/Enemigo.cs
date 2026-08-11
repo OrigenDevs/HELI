@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemigo : MonoBehaviour
@@ -5,16 +6,24 @@ public class Enemigo : MonoBehaviour
     [Header("Vida")]
     public float salud = 1f;
 
+    [Header("Particulas")]
+    public List<ParticleSystem> particulasGolpe;
+
     [Header("Muerte")]
     public float fuerzaMuerte = 5f;
     public float duracionEmpuje = 0.15f;
     public AnimationCurve curvaEmpuje = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    public GameObject objetoAEliminar;
 
     [Header("Animaciones")]
     public Animator animator;
     public float tiempoCambioIdle = 2f;
 
+    [Header("Mirar al jugador")]
+    public float tiempoMirarJugador = 0.15f;
+
     private Collider2D col;
+    private Transform jugador;
     private static readonly int ParamGolpeado = Animator.StringToHash("golpeado");
     private static readonly int ParamDerrotado = Animator.StringToHash("derrotado");
     private static readonly int ParamIdleVariante = Animator.StringToHash("idleVariante");
@@ -36,6 +45,24 @@ public class Enemigo : MonoBehaviour
             Debug.LogWarning("Enemigo sin Animator. Arrástralo en el campo animator.", this);
         else
             StartCoroutine(AlternarIdle());
+
+        MovimientoBEU m = FindFirstObjectByType<MovimientoBEU>();
+        if (m != null) jugador = m.transform;
+        StartCoroutine(MirarJugador());
+    }
+
+    System.Collections.IEnumerator MirarJugador()
+    {
+        while (!muerto)
+        {
+            yield return new WaitForSeconds(tiempoMirarJugador);
+            if (jugador == null || muerto) continue;
+
+            float dirX = Mathf.Sign(jugador.position.x - transform.position.x);
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr != null)
+                sr.flipX = dirX < 0f;
+        }
     }
 
     System.Collections.IEnumerator AlternarIdle()
@@ -50,6 +77,7 @@ public class Enemigo : MonoBehaviour
 
     public void RecibirDano(float dano)
     {
+        if (muerto) return;
         salud -= dano;
 
         MirarAlJugador();
@@ -60,12 +88,22 @@ public class Enemigo : MonoBehaviour
             animator.SetTrigger(ParamGolpeado);
     }
 
+    public void ReproducirParticula(int indice)
+    {
+        if (particulasGolpe == null || indice < 0 || indice >= particulasGolpe.Count) return;
+        particulasGolpe[indice].Play();
+    }
+
     void MirarAlJugador()
     {
-        MovimientoBEU jugador = FindFirstObjectByType<MovimientoBEU>();
+        if (jugador == null)
+        {
+            MovimientoBEU m = FindFirstObjectByType<MovimientoBEU>();
+            if (m != null) jugador = m.transform;
+        }
         if (jugador == null) return;
 
-        float dirX = Mathf.Sign(jugador.transform.position.x - transform.position.x);
+        float dirX = Mathf.Sign(jugador.position.x - transform.position.x);
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
             sr.flipX = dirX < 0f;
@@ -73,6 +111,7 @@ public class Enemigo : MonoBehaviour
 
     void Derrotar()
     {
+        if (muerto) return;
         muerto = true;
         if (onDerrotado != null)
             onDerrotado();
@@ -80,10 +119,14 @@ public class Enemigo : MonoBehaviour
             onCualquierDerrota();
 
         if (animator != null)
+        {
+            animator.ResetTrigger(ParamGolpeado);
+            animator.ResetTrigger(ParamDerrotado);
             animator.SetTrigger(ParamDerrotado);
+        }
         if (col != null)
             col.enabled = false;
-        Destroy(gameObject, 1f);
+        Destroy(objetoAEliminar != null ? objetoAEliminar : gameObject, 1f);
     }
 
     public void EventoMuerte()

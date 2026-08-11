@@ -1,22 +1,26 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(MovimientoBEU))]
 [RequireComponent(typeof(Animator))]
 public class GolpeJugador : MonoBehaviour
 {
+    [Header("Controles")]
+    public InputActionReference accionGolpe;
+    public InputActionReference accionSuper;
+
     [Header("Golpe")]
     public float dano = 1f;
     public float duracionGolpe = 0.5f;
-    public int golpesDisponibles = 3;
-    public Vector2 tamanoZona = new Vector2(0.5f, 0.5f);
-    public Vector2 offsetZona = new Vector2(1f, 0f);
-    public ParticleSystem particulaGolpe;
+    public Collider2D zonaGolpe;
     public AudioClip audioGolpe;
 
-    [Header("Aproximacion")]
-    public float distanciaAtaque = 0.3f;
-    public float velocidadAproximacion = 8f;
+    [Header("Combo")]
+    public float tiempoVentanaCombo = 0.7f;
+    public string paramGolpeSuave = "golpeSuave";
+    public string paramGolpeFuerte = "golpeFuerte";
 
     [Header("Super")]
     public int enemigosParaSuper = 3;
@@ -38,7 +42,6 @@ public class GolpeJugador : MonoBehaviour
     private MovimientoBEU movimiento;
     private Animator animator;
     private Rigidbody2D rb;
-    private Collider2D zonaGolpe;
     private AudioSource fuenteSuper;
     private Vector3 posicionSuperOriginal;
     private Vector3 posicionFlashOriginal;
@@ -53,14 +56,15 @@ public class GolpeJugador : MonoBehaviour
     private bool golpeSuper;
     private float dirXCongelado;
     private float sliderTarget;
-    private int contadorGolpes;
+    private int comboGolpes;
+    private float tiempoUltimoGolpe;
+    private int golpesBuffer;
     private int enemigosDerrotados;
     private bool superActivo;
-    private Enemigo enemigoEnRango;
+    private bool zonaGolpeActivada;
+    private readonly HashSet<Enemigo> enemigosGolpeados = new HashSet<Enemigo>();
     private CamaraSigue camara;
     private Coroutine corutinaOcultarUI;
-    private static readonly int ParamGolpe = Animator.StringToHash("golpe");
-    private static readonly int ParamVariante = Animator.StringToHash("golpeVariante");
 
     void Awake()
     {
@@ -74,13 +78,14 @@ public class GolpeJugador : MonoBehaviour
         camara = FindFirstObjectByType<CamaraSigue>();
         Enemigo.onCualquierDerrota += SumarDerrota;
 
-        GameObject zona = new GameObject("ZonaGolpe");
-        zona.transform.SetParent(transform);
-        zona.transform.localPosition = offsetZona;
-        zona.layer = gameObject.layer;
-        zonaGolpe = zona.AddComponent<BoxCollider2D>();
-        ((BoxCollider2D)zonaGolpe).size = tamanoZona;
-        zonaGolpe.isTrigger = true;
+        if (zonaGolpe != null)
+        {
+            zonaGolpe.enabled = false;
+            ZonaGolpe zg = zonaGolpe.GetComponent<ZonaGolpe>();
+            if (zg == null)
+                zg = zonaGolpe.gameObject.AddComponent<ZonaGolpe>();
+            zg.jugador = this;
+        }
 
         if (zonaSuper != null)
         {
@@ -118,7 +123,7 @@ public class GolpeJugador : MonoBehaviour
 
     void SumarDerrota()
     {
-        if (golpeSuper) return;
+        if (golpeSuper || superActivo) return;
         enemigosDerrotados++;
         sliderTarget = (float)enemigosDerrotados / enemigosParaSuper;
         if (enemigosDerrotados >= enemigosParaSuper)
@@ -133,10 +138,35 @@ public class GolpeJugador : MonoBehaviour
         if (sliderSuper != null)
             sliderSuper.value = Mathf.Lerp(sliderSuper.value, sliderTarget, Time.deltaTime * sliderVelocidad);
 
-        if (golpeando) return;
+        if (!golpeando && accionSuper != null && accionSuper.action.WasPressedThisFrame() && superActivo)
+        {
+            IniciarSuper();
+            return;
+        }
 
-        if (enemigoEnRango != null)
-            IniciarGolpe();
+        if (accionGolpe != null && accionGolpe.action.WasPressedThisFrame())
+        {
+            if (golpeando)
+            {
+                if (golpesBuffer < 3) golpesBuffer++;
+            }
+            else
+            {
+                IniciarGolpe();
+            }
+        }
+    }
+
+    void OnEnable()
+    {
+        if (accionGolpe != null) accionGolpe.action.Enable();
+        if (accionSuper != null) accionSuper.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (accionGolpe != null) accionGolpe.action.Disable();
+        if (accionSuper != null) accionSuper.action.Disable();
     }
 
     void IniciarGolpe()
@@ -145,88 +175,118 @@ public class GolpeJugador : MonoBehaviour
         movimiento.atacando = true;
         rb.linearVelocity = Vector2.zero;
 
-        if (enemigoEnRango != null)
+        zonaGolpeActivada = false;
+        enemigosGolpeados.Clear();
+
+        if (Time.time - tiempoUltimoGolpe <= tiempoVentanaCombo)
         {
-            MirarAlEnemigo();
-            StartCoroutine(AproximarseAlEnemigo());
+            comboGolpes++;
+            if (comboGolpes > 2) comboGolpes = 0;
+        }
+        else
+        {
+            comboGolpes = 0;
         }
 
-        if (superActivo)
-        {
-            if (corutinaOcultarUI != null)
-            {
-                StopCoroutine(corutinaOcultarUI);
-                corutinaOcultarUI = null;
-            }
+        if (comboGolpes >= 2)
+            animator.SetTrigger(paramGolpeFuerte);
+        else
+            animator.SetTrigger(paramGolpeSuave);
 
-            superActivo = false;
-            golpeSuper = true;
-            if (sliderSuper != null) sliderTarget = 0f;
-
-            foreach (Enemigo e in FindObjectsByType<Enemigo>(FindObjectsSortMode.None))
-            {
-                Animator a = e.GetComponentInChildren<Animator>();
-                if (a != null) a.speed = 0f;
-            }
-
-            float dirX = ObtenerDireccionFlipeada();
-            dirXCongelado = dirX;
-
-            if (zonaSuper != null)
-                zonaSuper.transform.localPosition = new Vector2(
-                    Mathf.Abs(posicionSuperOriginal.x) * dirX,
-                    posicionSuperOriginal.y
-                );
-
-            if (particulaFlash != null)
-            {
-                Transform pt = particulaFlash.transform;
-                pt.localPosition = new Vector2(
-                    Mathf.Abs(posicionFlashOriginal.x) * dirX,
-                    posicionFlashOriginal.y
-                );
-                pt.localScale = new Vector3(
-                    Mathf.Abs(escalaFlashOriginal.x) * dirX,
-                    escalaFlashOriginal.y,
-                    escalaFlashOriginal.z
-                );
-                SetFlipXRecursivo(particulaFlash, dirX > 0f ? flipXFlashOriginal : 0f);
-                particulaFlash.Play();
-            }
-
-            if (audioPreSuper != null && SoundManager.instancia != null)
-                SoundManager.instancia.Reproducir(audioPreSuper);
-
-            if (uiSuper != null)
-            {
-                Transform ut = uiSuper.transform;
-                ut.localPosition = new Vector2(
-                    Mathf.Abs(posicionUiSuperOriginal.x) * -dirX,
-                    posicionUiSuperOriginal.y
-                );
-                ut.localScale = new Vector3(
-                    Mathf.Abs(ut.localScale.x) * dirX,
-                    ut.localScale.y,
-                    ut.localScale.z
-                );
-                uiSuper.SetActive(true);
-            }
-
-            if (SoundManager.instancia != null)
-                SoundManager.instancia.BajarMusica(factorMusicaSuper);
-
-            animator.SetTrigger(paramPreSuperAnim);
-            StartCoroutine(DescongelarEnemigos());
-            return;
-        }
-
-        animator.SetInteger(ParamVariante, contadorGolpes);
-        animator.SetTrigger(ParamGolpe);
-
-        contadorGolpes = (contadorGolpes + 1) % golpesDisponibles;
-
-        Invoke(nameof(AplicarGolpe), duracionGolpe * 0.5f);
         Invoke(nameof(FinGolpe), duracionGolpe);
+    }
+
+    public void ActivarZonaGolpe()
+    {
+        if (zonaGolpe == null || zonaGolpeActivada) return;
+        zonaGolpeActivada = true;
+        enemigosGolpeados.Clear();
+        zonaGolpe.enabled = true;
+    }
+
+    public void DesactivarZonaGolpe()
+    {
+        if (zonaGolpe != null)
+            zonaGolpe.enabled = false;
+    }
+
+    public void HitboxGolpear(Enemigo enemigo)
+    {
+        if (enemigo == null || enemigo.muerto || enemigosGolpeados.Contains(enemigo)) return;
+        enemigosGolpeados.Add(enemigo);
+        enemigo.RecibirDano(dano);
+    }
+
+    void IniciarSuper()
+    {
+        golpeando = true;
+        movimiento.atacando = true;
+        rb.linearVelocity = Vector2.zero;
+
+        if (corutinaOcultarUI != null)
+        {
+            StopCoroutine(corutinaOcultarUI);
+            corutinaOcultarUI = null;
+        }
+
+        superActivo = false;
+        golpeSuper = true;
+        if (sliderSuper != null) sliderTarget = 0f;
+
+        foreach (Enemigo e in FindObjectsByType<Enemigo>(FindObjectsSortMode.None))
+        {
+            Animator a = e.GetComponentInChildren<Animator>();
+            if (a != null) a.speed = 0f;
+        }
+
+        float dirX = ObtenerDireccionFlipeada();
+        dirXCongelado = dirX;
+
+        if (zonaSuper != null)
+            zonaSuper.transform.localPosition = new Vector2(
+                Mathf.Abs(posicionSuperOriginal.x) * dirX,
+                posicionSuperOriginal.y
+            );
+
+        if (particulaFlash != null)
+        {
+            Transform pt = particulaFlash.transform;
+            pt.localPosition = new Vector2(
+                Mathf.Abs(posicionFlashOriginal.x) * dirX,
+                posicionFlashOriginal.y
+            );
+            pt.localScale = new Vector3(
+                Mathf.Abs(escalaFlashOriginal.x) * dirX,
+                escalaFlashOriginal.y,
+                escalaFlashOriginal.z
+            );
+            SetFlipXRecursivo(particulaFlash, dirX > 0f ? flipXFlashOriginal : 0f);
+            particulaFlash.Play();
+        }
+
+        if (audioPreSuper != null && SoundManager.instancia != null)
+            SoundManager.instancia.Reproducir(audioPreSuper);
+
+        if (uiSuper != null)
+        {
+            Transform ut = uiSuper.transform;
+            ut.localPosition = new Vector2(
+                Mathf.Abs(posicionUiSuperOriginal.x) * -dirX,
+                posicionUiSuperOriginal.y
+            );
+            ut.localScale = new Vector3(
+                Mathf.Abs(ut.localScale.x) * dirX,
+                ut.localScale.y,
+                ut.localScale.z
+            );
+            uiSuper.SetActive(true);
+        }
+
+        if (SoundManager.instancia != null)
+            SoundManager.instancia.BajarMusica(factorMusicaSuper);
+
+        animator.SetTrigger(paramPreSuperAnim);
+        StartCoroutine(DescongelarEnemigos());
     }
 
     float ObtenerDireccionFlipeada()
@@ -251,54 +311,28 @@ public class GolpeJugador : MonoBehaviour
             r.flip = new Vector3(flipX, r.flip.y, r.flip.z);
     }
 
-    void MirarAlEnemigo()
-    {
-        float dirX = Mathf.Sign(enemigoEnRango.transform.position.x - transform.position.x);
-
-        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-        if (sr != null)
-            sr.flipX = dirX < 0f;
-
-        float absX = Mathf.Abs(offsetZona.x);
-        zonaGolpe.transform.localPosition = new Vector2(absX * dirX, offsetZona.y);
-    }
-
-    System.Collections.IEnumerator AproximarseAlEnemigo()
-    {
-        Vector2 objetivo = enemigoEnRango.transform.position;
-
-        float dirX = Mathf.Sign(transform.position.x - objetivo.x);
-        objetivo.x += dirX * distanciaAtaque;
-
-        while (Vector2.Distance(transform.position, objetivo) > 0.01f)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, objetivo, velocidadAproximacion * Time.deltaTime);
-            yield return null;
-        }
-    }
-
     public void EventoGolpe()
     {
         if (camara != null) camara.Sacudir();
     }
 
-    public void EventoParticula()
+    public void EventoParticula(int indice)
     {
-        if (particulaGolpe == null) return;
+        List<Enemigo> objetivo = new List<Enemigo>(enemigosGolpeados);
 
-        float dirX = ObtenerDireccionFlipeada();
-        Transform pt = particulaGolpe.transform;
-        pt.localPosition = new Vector3(
-            Mathf.Abs(pt.localPosition.x) * dirX,
-            pt.localPosition.y,
-            pt.localPosition.z
-        );
-        pt.localScale = new Vector3(
-            Mathf.Abs(pt.localScale.x) * dirX,
-            pt.localScale.y,
-            pt.localScale.z
-        );
-        particulaGolpe.Play();
+        if (objetivo.Count == 0 && zonaGolpe != null)
+        {
+            Vector2 origen = zonaGolpe.transform.position;
+            Vector2 tamano = ((BoxCollider2D)zonaGolpe).size;
+            foreach (Collider2D hit in Physics2D.OverlapBoxAll(origen, tamano, 0f))
+            {
+                Enemigo e = hit.GetComponent<Enemigo>();
+                if (e != null) objetivo.Add(e);
+            }
+        }
+
+        foreach (Enemigo e in objetivo)
+            e.ReproducirParticula(indice);
     }
 
     public void EventoAudio()
@@ -364,30 +398,30 @@ public class GolpeJugador : MonoBehaviour
 
     public void AplicarGolpe()
     {
-        if (golpeSuper)
+        if (!golpeSuper) return;
+
+        Collider2D zona = zonaSuper;
+        if (zona != null)
         {
-            Collider2D zona = zonaSuper;
-            if (zona != null)
+            Vector2 origen = zona.transform.position;
+            Vector2 tamano = ((BoxCollider2D)zona).size;
+            Collider2D[] hits = Physics2D.OverlapBoxAll(origen, tamano, 0f);
+            foreach (var hit in hits)
             {
-                Vector2 origen = zona.transform.position;
-                Vector2 tamano = ((BoxCollider2D)zona).size;
-                Collider2D[] hits = Physics2D.OverlapBoxAll(origen, tamano, 0f);
-                foreach (var hit in hits)
-                {
-                    Enemigo e = hit.GetComponent<Enemigo>();
-                    if (e != null) e.RecibirDano(danoSuper);
-                }
+                Enemigo e = hit.GetComponent<Enemigo>();
+                if (e != null) e.RecibirDano(danoSuper);
             }
-            golpeSuper = false;
         }
-        else if (enemigoEnRango != null)
-        {
-            enemigoEnRango.RecibirDano(dano);
-        }
+        golpeSuper = false;
     }
 
     public void FinGolpe()
     {
+        DesactivarZonaGolpe();
+        zonaGolpeActivada = false;
+        enemigosGolpeados.Clear();
+        tiempoUltimoGolpe = Time.time;
+
         fuenteSuper.Stop();
         fuenteSuper.clip = null;
 
@@ -403,13 +437,20 @@ public class GolpeJugador : MonoBehaviour
         if (SoundManager.instancia != null)
             SoundManager.instancia.RestaurarMusica();
 
-        animator.ResetTrigger(ParamGolpe);
+        animator.ResetTrigger(paramGolpeSuave);
+        animator.ResetTrigger(paramGolpeFuerte);
         animator.ResetTrigger(paramPreSuperAnim);
         animator.ResetTrigger(paramSuperAnim);
         golpeando = false;
         movimiento.atacando = false;
 
         StartCoroutine(RestaurarParticulasAlMorir());
+
+        if (golpesBuffer > 0)
+        {
+            golpesBuffer--;
+            IniciarGolpe();
+        }
     }
 
     System.Collections.IEnumerator RestaurarParticulasAlMorir()
@@ -433,18 +474,5 @@ public class GolpeJugador : MonoBehaviour
             particulaSuper.transform.localScale = escalaParticulaSuperOriginal;
             SetFlipXRecursivo(particulaSuper, flipXParticulaSuperOriginal);
         }
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        Enemigo enemigo = other.GetComponent<Enemigo>();
-        if (enemigo != null)
-            enemigoEnRango = enemigo;
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.GetComponent<Enemigo>() == enemigoEnRango)
-            enemigoEnRango = null;
     }
 }
