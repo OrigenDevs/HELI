@@ -54,6 +54,7 @@ public class GolpeJugador : MonoBehaviour
     private float flipXParticulaSuperOriginal;
     private bool golpeando;
     private bool golpeSuper;
+    private bool controlBloqueado;
     private float dirXCongelado;
     private float sliderTarget;
     private int comboGolpes;
@@ -63,6 +64,7 @@ public class GolpeJugador : MonoBehaviour
     private bool superActivo;
     private bool zonaGolpeActivada;
     private readonly HashSet<Enemigo> enemigosGolpeados = new HashSet<Enemigo>();
+    private readonly HashSet<CajaDeprovisiones> cajasGolpeadas = new HashSet<CajaDeprovisiones>();
     private CamaraSigue camara;
     private Coroutine corutinaOcultarUI;
 
@@ -133,10 +135,30 @@ public class GolpeJugador : MonoBehaviour
         }
     }
 
+    public void CargarSuperAlMaximo()
+    {
+        if (golpeSuper) return;
+        superActivo = true;
+        enemigosDerrotados = 0;
+        sliderTarget = 1f;
+    }
+
+    public void BloquearControles()
+    {
+        controlBloqueado = true;
+        golpeando = true;
+        movimiento.atacando = true;
+        rb.linearVelocity = Vector2.zero;
+        if (zonaGolpe != null) zonaGolpe.enabled = false;
+        if (zonaSuper != null) zonaSuper.enabled = false;
+    }
+
     void Update()
     {
         if (sliderSuper != null)
             sliderSuper.value = Mathf.Lerp(sliderSuper.value, sliderTarget, Time.deltaTime * sliderVelocidad);
+
+        if (controlBloqueado) return;
 
         if (!golpeando && accionSuper != null && accionSuper.action.WasPressedThisFrame() && superActivo)
         {
@@ -177,6 +199,7 @@ public class GolpeJugador : MonoBehaviour
 
         zonaGolpeActivada = false;
         enemigosGolpeados.Clear();
+        cajasGolpeadas.Clear();
 
         if (Time.time - tiempoUltimoGolpe <= tiempoVentanaCombo)
         {
@@ -201,6 +224,7 @@ public class GolpeJugador : MonoBehaviour
         if (zonaGolpe == null || zonaGolpeActivada) return;
         zonaGolpeActivada = true;
         enemigosGolpeados.Clear();
+        cajasGolpeadas.Clear();
         zonaGolpe.enabled = true;
     }
 
@@ -215,6 +239,13 @@ public class GolpeJugador : MonoBehaviour
         if (enemigo == null || enemigo.muerto || enemigosGolpeados.Contains(enemigo)) return;
         enemigosGolpeados.Add(enemigo);
         enemigo.RecibirDano(dano);
+    }
+
+    public void HitboxGolpearCaja(CajaDeprovisiones caja)
+    {
+        if (caja == null || cajasGolpeadas.Contains(caja)) return;
+        cajasGolpeadas.Add(caja);
+        caja.RecibirGolpe(dano);
     }
 
     void IniciarSuper()
@@ -420,6 +451,7 @@ public class GolpeJugador : MonoBehaviour
         DesactivarZonaGolpe();
         zonaGolpeActivada = false;
         enemigosGolpeados.Clear();
+        cajasGolpeadas.Clear();
         tiempoUltimoGolpe = Time.time;
 
         fuenteSuper.Stop();

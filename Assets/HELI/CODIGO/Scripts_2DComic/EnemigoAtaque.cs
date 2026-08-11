@@ -19,8 +19,10 @@ public class EnemigoAtaque : MonoBehaviour
     private Enemigo enemigo;
     private Animator animator;
     private Transform jugador;
+    private VidaJugador vidaJugador;
     private float tiempoUltimoAtaque;
     private bool atacando;
+    private bool detenido;
 
     void Awake()
     {
@@ -32,7 +34,11 @@ public class EnemigoAtaque : MonoBehaviour
     void Start()
     {
         MovimientoBEU movimiento = FindFirstObjectByType<MovimientoBEU>();
-        if (movimiento != null) jugador = movimiento.transform;
+        if (movimiento != null)
+        {
+            jugador = movimiento.transform;
+            vidaJugador = jugador.GetComponent<VidaJugador>();
+        }
 
         if (zonaAtaque != null)
         {
@@ -47,9 +53,10 @@ public class EnemigoAtaque : MonoBehaviour
 
     System.Collections.IEnumerator RevisarAtaque()
     {
-        while (!enemigo.muerto)
+        while (!enemigo.muerto && !detenido)
         {
-            if (!atacando && jugador != null &&
+            if (!atacando && !detenido && jugador != null &&
+                vidaJugador != null && !vidaJugador.muerta &&
                 Time.time >= tiempoUltimoAtaque + cooldownAtaque &&
                 Vector2.Distance(transform.position, jugador.position) <= distanciaAtaque)
             {
@@ -59,6 +66,13 @@ public class EnemigoAtaque : MonoBehaviour
             }
             yield return new WaitForSeconds(tiempoRevision);
         }
+    }
+
+    public void DetenerAtaque()
+    {
+        detenido = true;
+        atacando = false;
+        if (zonaAtaque != null) zonaAtaque.enabled = false;
     }
 
     public void ActivarZonaAtaque()
@@ -87,6 +101,6 @@ public class EnemigoAtaque : MonoBehaviour
 
     public void GolpearJugador(VidaJugador jugador)
     {
-        if (jugador != null) jugador.RecibirDano(dano);
+        if (jugador != null && !jugador.muerta) jugador.RecibirDano(dano);
     }
 }

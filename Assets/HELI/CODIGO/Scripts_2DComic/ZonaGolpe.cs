@@ -9,5 +9,9 @@ public class ZonaGolpe : MonoBehaviour
         Enemigo enemigo = other.GetComponent<Enemigo>();
         if (enemigo != null && jugador != null)
             jugador.HitboxGolpear(enemigo);
+
+        CajaDeprovisiones caja = other.GetComponent<CajaDeprovisiones>();
+        if (caja != null && jugador != null)
+            jugador.HitboxGolpearCaja(caja);
     }
 }
