@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MenuButton3D : MonoBehaviour
 {
-    [Header("Enfoque de Cámara")]
+    [Header("Enfoque de Cï¿½mara")]
     public Transform puntoCamara;
 
     [Header("Efecto Visual Principal")]
@@ -10,10 +10,10 @@ public class MenuButton3D : MonoBehaviour
     public Vector3 escalaNormal = Vector3.one;
     public Vector3 escalaSeleccionado = new Vector3(1.15f, 1.15f, 1.15f);
 
-    [Header("Efecto MvC3 (Mismo tamaño que el Padre)")]
+    [Header("Efecto MvC3 (Mismo tamaï¿½o que el Padre)")]
     public Renderer[] ghostRenderers;
 
-    [Tooltip("Hacia adelante (eje Y local en tu configuración).")]
+    [Tooltip("Hacia adelante (eje Y local en tu configuraciï¿½n).")]
     public float empujeHaciaCamaraY = 2.5f;
     [Tooltip("Desfase diagonal en X mientras avanza.")]
     public float desvioDiagonalX = 0.3f;
@@ -26,15 +26,15 @@ public class MenuButton3D : MonoBehaviour
     public Renderer meshRenderer;
     public float velocidadCambio = 12f;
 
-    [Header("Configuración de Destino")]
-    [Tooltip("Escribe el nombre exacto de la escena que debe cargar este botón específico.")]
+    [Header("Configuraciï¿½n de Destino")]
+    [Tooltip("Escribe el nombre exacto de la escena que debe cargar este botï¿½n especï¿½fico.")]
     public string nombreEscenaDestino;
 
     private bool seleccionado = false;
     private Material miMaterial;
     private Material[] ghostMateriales;
-    private float targetFade = 1f;
-    private float targetGrey = 1f;
+    public float targetFade = 1f;
+    public float targetGrey = 1f;
     private float factorBurstActual = 0f;
 
     private Vector3[] posOriginalesGhosts;

@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796123cbd9d638947a64c50849895dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
-  salud: 1.5
+  salud: 3
   particulasGolpe:
   - {fileID: 3133775376529488128}
   - {fileID: 3194752186174598411}

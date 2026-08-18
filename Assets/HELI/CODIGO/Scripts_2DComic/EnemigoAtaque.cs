@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Enemigo))]
@@ -23,6 +24,7 @@ public class EnemigoAtaque : MonoBehaviour
     private float tiempoUltimoAtaque;
     private bool atacando;
     private bool detenido;
+    private readonly HashSet<Transform> jugadoresGolpeados = new HashSet<Transform>();
 
     void Awake()
     {
@@ -78,6 +80,7 @@ public class EnemigoAtaque : MonoBehaviour
     public void ActivarZonaAtaque()
     {
         if (zonaAtaque != null) zonaAtaque.enabled = true;
+        jugadoresGolpeados.Clear();
     }
 
     public void DesactivarZonaAtaque()
@@ -89,6 +92,10 @@ public class EnemigoAtaque : MonoBehaviour
     public void EventoParticula(int indice)
     {
         if (jugador == null) return;
+        if (!jugadoresGolpeados.Contains(jugador) && zonaAtaque != null && zonaAtaque.enabled)
+            jugadoresGolpeados.Add(jugador);
+        if (!jugadoresGolpeados.Contains(jugador)) return;
+
         VidaJugador vj = jugador.GetComponent<VidaJugador>();
         if (vj != null) vj.ReproducirParticula(indice);
     }
@@ -101,6 +108,10 @@ public class EnemigoAtaque : MonoBehaviour
 
     public void GolpearJugador(VidaJugador jugador)
     {
-        if (jugador != null && !jugador.muerta) jugador.RecibirDano(dano);
+        if (jugador != null && !jugador.muerta)
+        {
+            jugadoresGolpeados.Add(jugador.transform);
+            jugador.RecibirDano(dano);
+        }
     }
 }

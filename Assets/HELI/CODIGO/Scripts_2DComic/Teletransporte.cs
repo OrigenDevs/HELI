@@ -71,6 +71,9 @@ public class Teletransporte : MonoBehaviour
         SpriteRenderer sr = jugadorTransform.GetComponentInChildren<SpriteRenderer>();
         Transform camTransform = camara != null ? camara.transform : null;
         bool usarZoom = camTransform != null && zoomCamara != 0f;
+        GolpeJugador golpeJugador = jugadorTransform.GetComponent<GolpeJugador>();
+
+        if (golpeJugador != null) golpeJugador.BloquearControles();
 
         for (int i = 0; i < ruta.Length; i++)
         {
@@ -106,6 +109,7 @@ public class Teletransporte : MonoBehaviour
         RestaurarZoomSuave();
 
         jugador.controlBloqueado = false;
+        if (golpeJugador != null) golpeJugador.DesbloquearControles();
         trasladoActivo = null;
     }
 }

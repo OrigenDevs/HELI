@@ -51,6 +51,10 @@ public class PlayerController2 : MonoBehaviour
     [Tooltip("Animator del personaje")]
     public Animator animator;
     
+    [Header("Touch Canvas")]
+    public Canvas touchCanvas;
+    public bool ocultarTouchCanvas;
+
     [Header("Debug - Información en Tiempo Real")]
     [Tooltip("Mostrar información de debug en consola")]
     public bool mostrarDebug = true;
@@ -231,7 +235,10 @@ public class PlayerController2 : MonoBehaviour
 
         if (inputSalto && enSuelo && !estaSaltando)
         {
-            CalcularVelocidadSalto();
+        CalcularVelocidadSalto();
+
+        if (ocultarTouchCanvas && touchCanvas != null)
+            touchCanvas.gameObject.SetActive(false);
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, velocidadInicialSalto, rb.linearVelocity.z);
             estaSaltando = true;
 

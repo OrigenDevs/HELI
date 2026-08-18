@@ -27,6 +27,7 @@ public class Enemigo : MonoBehaviour
     private static readonly int ParamGolpeado = Animator.StringToHash("golpeado");
     private static readonly int ParamDerrotado = Animator.StringToHash("derrotado");
     private static readonly int ParamIdleVariante = Animator.StringToHash("idleVariante");
+    private bool tieneIdleVariante;
 
     public System.Action onDerrotado;
     public static System.Action onCualquierDerrota;
@@ -36,6 +37,17 @@ public class Enemigo : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+        if (animator != null)
+        {
+            for (int i = 0; i < animator.parameterCount; i++)
+            {
+                if (animator.GetParameter(i).nameHash == ParamIdleVariante)
+                {
+                    tieneIdleVariante = true;
+                    break;
+                }
+            }
+        }
         col = GetComponent<Collider2D>();
     }
 
@@ -67,6 +79,7 @@ public class Enemigo : MonoBehaviour
 
     System.Collections.IEnumerator AlternarIdle()
     {
+        if (!tieneIdleVariante) yield break;
         while (!muerto)
         {
             yield return new WaitForSeconds(Random.Range(tiempoCambioIdle * 0.5f, tiempoCambioIdle * 1.5f));
@@ -81,6 +94,8 @@ public class Enemigo : MonoBehaviour
         salud -= dano;
 
         MirarAlJugador();
+
+        ReproducirParticula(0);
 
         if (salud <= 0f)
             Derrotar();
@@ -122,6 +137,7 @@ public class Enemigo : MonoBehaviour
         {
             animator.ResetTrigger(ParamGolpeado);
             animator.ResetTrigger(ParamDerrotado);
+            ReproducirParticula(1);
             animator.SetTrigger(ParamDerrotado);
         }
         if (col != null)

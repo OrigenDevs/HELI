@@ -67,15 +67,15 @@ public class InputManager : MonoBehaviour
 
     void DetectActiveInputMode()
     {
-        if (Touchscreen.current != null && Touchscreen.current.wasUpdatedThisFrame)
+        if (Input.touchCount > 0 || (Touchscreen.current != null && Touchscreen.current.wasUpdatedThisFrame))
             CurrentInputMode = InputMode.Touch;
     }
 
     void UpdateInputModeFromDevice(InputDevice device)
     {
-        if (device is Touchscreen)
-            CurrentInputMode = InputMode.Touch;
-        else if (device is Gamepad)
+        if (CurrentInputMode == InputMode.Touch) return;
+
+        if (device is Gamepad)
             CurrentInputMode = InputMode.Gamepad;
         else if (device is Keyboard)
             CurrentInputMode = InputMode.Keyboard;
@@ -85,10 +85,7 @@ public class InputManager : MonoBehaviour
 
     void UpdateTouchUI()
     {
-        bool showTouch =
-            DeviceDetector.isMobileWebGl &&
-            CurrentInputMode == InputMode.Touch;
-
+        bool showTouch = CurrentInputMode == InputMode.Touch;
         touchUI.SetActive(showTouch);
     }
 

@@ -9,11 +9,13 @@ public class Menu3DManager : MonoBehaviour
     [Header("Lista de Botones 3D")]
     public MenuButton3D[] botonesMenu;
 
-    [Header("Configuración de Input (New Input System)")]
-    [Tooltip("Puedes arrastrar una referencia de acción o dejarla vacía para que use 'Jump' por defecto.")]
+    [Header("Configuraciï¿½n de Input (New Input System)")]
+    [Tooltip("Acciï¿½n para confirmar (Jump / Botï¿½n Sur).")]
     public InputActionReference actionJump;
+    [Tooltip("Puedes arrastrar una referencia de acciï¿½n para navegar o dejarla vacï¿½a para que use 'WASD' y el Stick Izquierdo por defecto.")]
+    public InputActionReference actionNavigate;
 
-    [Header("Configuración de Cámara")]
+    [Header("Configuraciï¿½n de Cï¿½mara")]
     public Transform camaraPrincipal;
     public float suavizadoCamara = 5f;
     public float distanciaZ = -10f;
@@ -22,7 +24,7 @@ public class Menu3DManager : MonoBehaviour
     [Header("Efecto Shake (Onda de Choque)")]
     [Tooltip("Intensidad inicial del temblor (un valor bajo como 0.15f o 0.2f es ideal para algo sutil).")]
     public float intensidadShake = 0.2f;
-    [Tooltip("Qué tan rápido se disipa el temblor después del impacto.")]
+    [Tooltip("Quï¿½ tan rï¿½pido se disipa el temblor despuï¿½s del impacto.")]
     public float disipacionShake = 5f;
 
     private float shakeActual = 0f;
@@ -33,9 +35,9 @@ public class Menu3DManager : MonoBehaviour
     public float velocidadSubidaBlanco = 2f;
 
     [Header("Control de Post-Processing")]
-    [Tooltip("Arrastra aquí el objeto de la escena que tiene el Post-Process Volume que quieres activar.")]
+    [Tooltip("Arrastra aquï¿½ el objeto de la escena que tiene el Post-Process Volume que quieres activar.")]
     public Volume volumenPostProcess;
-    [Tooltip("Qué tan rápido sube el volumen de 0 a 1.")]
+    [Tooltip("Quï¿½ tan rï¿½pido sube el volumen de 0 a 1.")]
     public float velocidadSubidaVolumen = 3f;
 
     [Header("Sistema de Audio Centralizado")]
@@ -43,8 +45,8 @@ public class Menu3DManager : MonoBehaviour
     public AudioClip sfxPasarCarta;
     public AudioClip sfxSeleccionarCarta;
 
-    private InputAction navigateAction;
     private InputAction jumpActionDinamica;
+    private InputAction navigateActionDinamica;
 
     private int indiceActual = 0;
     private bool controlEjeBloqueado = false;
@@ -60,7 +62,7 @@ public class Menu3DManager : MonoBehaviour
 
     void Awake()
     {
-        // Si no asignas una InputActionReference en el Inspector, creamos una por defecto con Jump (Espacio / Botón Sur)
+        // Si no asignas una InputActionReference para Jump, creamos una por defecto
         if (actionJump == null || actionJump.action == null)
         {
             jumpActionDinamica = new InputAction("JumpActionDefault");
@@ -68,14 +70,17 @@ public class Menu3DManager : MonoBehaviour
             jumpActionDinamica.AddBinding("<Gamepad>/buttonSouth");
         }
 
-        // Creamos una acción genérica de navegación por teclado/mando para moverse de forma fluida
-        navigateAction = new InputAction("NavigateAction");
-        navigateAction.AddCompositeBinding("2DVector")
-            .With("Up", "<Keyboard>/w")
-            .With("Down", "<Keyboard>/s")
-            .With("Left", "<Keyboard>/a")
-            .With("Right", "<Keyboard>/d");
-        navigateAction.AddBinding("<Gamepad>/leftStick");
+        // Si no asignas una InputActionReference para Navigate, creamos una por defecto con WASD y Stick
+        if (actionNavigate == null || actionNavigate.action == null)
+        {
+            navigateActionDinamica = new InputAction("NavigateActionDefault");
+            navigateActionDinamica.AddCompositeBinding("2DVector")
+                .With("Up", "<Keyboard>/w")
+                .With("Down", "<Keyboard>/s")
+                .With("Left", "<Keyboard>/a")
+                .With("Right", "<Keyboard>/d");
+            navigateActionDinamica.AddBinding("<Gamepad>/leftStick");
+        }
 
         if (camaraPrincipal == null && Camera.main != null)
         {
@@ -109,8 +114,11 @@ public class Menu3DManager : MonoBehaviour
         if (jumpActionDinamica != null)
             jumpActionDinamica.Enable();
 
-        if (navigateAction != null)
-            navigateAction.Enable();
+        if (actionNavigate != null && actionNavigate.action != null && !actionNavigate.action.enabled)
+            actionNavigate.action.Enable();
+
+        if (navigateActionDinamica != null)
+            navigateActionDinamica.Enable();
     }
 
     void OnDisable()
@@ -121,14 +129,17 @@ public class Menu3DManager : MonoBehaviour
         if (jumpActionDinamica != null)
             jumpActionDinamica.Disable();
 
-        if (navigateAction != null)
-            navigateAction.Disable();
+        if (actionNavigate != null && actionNavigate.action != null && actionNavigate.action.enabled)
+            actionNavigate.action.Disable();
+
+        if (navigateActionDinamica != null)
+            navigateActionDinamica.Disable();
     }
 
     void OnDestroy()
     {
         jumpActionDinamica?.Dispose();
-        navigateAction?.Dispose();
+        navigateActionDinamica?.Dispose();
     }
 
     void Start()
@@ -162,8 +173,17 @@ public class Menu3DManager : MonoBehaviour
 
     private void ManejarInputNavegacion()
     {
-        if (navigateAction == null) return;
-        Vector2 direccionInput = navigateAction.ReadValue<Vector2>();
+        Vector2 direccionInput = Vector2.zero;
+
+        // Comprueba si se usï¿½ la referencia pï¿½blica o la interna por defecto para navegar
+        if (actionNavigate != null && actionNavigate.action != null)
+        {
+            direccionInput = actionNavigate.action.ReadValue<Vector2>();
+        }
+        else if (navigateActionDinamica != null)
+        {
+            direccionInput = navigateActionDinamica.ReadValue<Vector2>();
+        }
 
         if (Mathf.Abs(direccionInput.x) > 0.5f)
         {
@@ -184,7 +204,6 @@ public class Menu3DManager : MonoBehaviour
     {
         bool triggerAccion = false;
 
-        // Comprueba si se usó la referencia pública o la interna por defecto
         if (actionJump != null && actionJump.action != null)
         {
             triggerAccion = actionJump.action.triggered;
@@ -209,8 +228,47 @@ public class Menu3DManager : MonoBehaviour
             targetPesoVolumen = 1f;
             shakeActual = intensidadShake;
 
-            Debug.Log("Confirmado con Action Jump: Ejecutando Onda de Choque en Cámara.");
+            Debug.Log("Confirmado con Action Jump: Ejecutando Onda de Choque en Cï¿½mara.");
         }
+    }
+
+    public void CambiarSeleccionPorIndice(int nuevoIndice)
+    {
+        if (botonesMenu.Length == 0) return;
+        if (nuevoIndice < 0 || nuevoIndice >= botonesMenu.Length) return;
+        if (nuevoIndice == indiceActual) return;
+
+        botonesMenu[indiceActual].Deseleccionar();
+        indiceActual = nuevoIndice;
+        botonesMenu[indiceActual].Seleccionar();
+
+        ReproducirSonido(sfxPasarCarta);
+
+        CalcularPosicionCamara();
+    }
+
+    public void Confirmar()
+    {
+        if (navegacionBloqueada) return;
+        navegacionBloqueada = true;
+
+        foreach (var boton in botonesMenu)
+        {
+            if (boton != null) boton.EjecutarConfirmacion();
+        }
+
+        ReproducirSonido(sfxSeleccionarCarta);
+
+        targetOpacidadFlash = 1f;
+        targetPesoVolumen = 1f;
+        shakeActual = intensidadShake;
+    }
+
+    public void FijarCamara(Vector3 posicion)
+    {
+        posicionObjetivoCamara = posicion;
+        if (camaraPrincipal != null)
+            camaraPrincipal.position = posicion;
     }
 
     private void AnimarPesoVolumen()

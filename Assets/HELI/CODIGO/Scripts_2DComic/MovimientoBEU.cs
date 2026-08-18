@@ -54,6 +54,11 @@ public class MovimientoBEU : MonoBehaviour
         direccion = Vector2.zero;
     }
 
+    public void SetDireccionManual(Vector2 dir)
+    {
+        direccion = dir;
+    }
+
     void FixedUpdate()
     {
         if (!atacando && !controlBloqueado)

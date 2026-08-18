@@ -153,6 +153,13 @@ public class GolpeJugador : MonoBehaviour
         if (zonaSuper != null) zonaSuper.enabled = false;
     }
 
+    public void DesbloquearControles()
+    {
+        controlBloqueado = false;
+        golpeando = false;
+        movimiento.atacando = false;
+    }
+
     void Update()
     {
         if (sliderSuper != null)
@@ -160,23 +167,37 @@ public class GolpeJugador : MonoBehaviour
 
         if (controlBloqueado) return;
 
-        if (!golpeando && accionSuper != null && accionSuper.action.WasPressedThisFrame() && superActivo)
-        {
-            IniciarSuper();
-            return;
-        }
-
         if (accionGolpe != null && accionGolpe.action.WasPressedThisFrame())
         {
-            if (golpeando)
-            {
-                if (golpesBuffer < 3) golpesBuffer++;
-            }
-            else
-            {
-                IniciarGolpe();
-            }
+            PulsarGolpe();
         }
+
+        if (accionSuper != null && accionSuper.action.WasPressedThisFrame())
+        {
+            PulsarSuper();
+        }
+    }
+
+    public void PulsarGolpe()
+    {
+        if (controlBloqueado) return;
+
+        if (golpeando)
+        {
+            if (golpesBuffer < 3) golpesBuffer++;
+        }
+        else
+        {
+            IniciarGolpe();
+        }
+    }
+
+    public void PulsarSuper()
+    {
+        if (controlBloqueado) return;
+
+        if (!golpeando && superActivo)
+            IniciarSuper();
     }
 
     void OnEnable()
@@ -349,21 +370,6 @@ public class GolpeJugador : MonoBehaviour
 
     public void EventoParticula(int indice)
     {
-        List<Enemigo> objetivo = new List<Enemigo>(enemigosGolpeados);
-
-        if (objetivo.Count == 0 && zonaGolpe != null)
-        {
-            Vector2 origen = zonaGolpe.transform.position;
-            Vector2 tamano = ((BoxCollider2D)zonaGolpe).size;
-            foreach (Collider2D hit in Physics2D.OverlapBoxAll(origen, tamano, 0f))
-            {
-                Enemigo e = hit.GetComponent<Enemigo>();
-                if (e != null) objetivo.Add(e);
-            }
-        }
-
-        foreach (Enemigo e in objetivo)
-            e.ReproducirParticula(indice);
     }
 
     public void EventoAudio()
