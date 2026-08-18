@@ -67,6 +67,9 @@ public class GolpeJugador : MonoBehaviour
     private readonly HashSet<CajaDeprovisiones> cajasGolpeadas = new HashSet<CajaDeprovisiones>();
     private CamaraSigue camara;
     private Coroutine corutinaOcultarUI;
+    private Vector3 posSliderSuperOriginal;
+    private Quaternion rotSliderSuperOriginal;
+    private Vector3 escalaSliderSuperOriginal;
 
     void Awake()
     {
@@ -118,6 +121,9 @@ public class GolpeJugador : MonoBehaviour
 
         if (sliderSuper != null)
         {
+            posSliderSuperOriginal = sliderSuper.transform.localPosition;
+            rotSliderSuperOriginal = sliderSuper.transform.localRotation;
+            escalaSliderSuperOriginal = sliderSuper.transform.localScale;
             sliderSuper.value = 0f;
             sliderTarget = 0f;
         }
@@ -162,9 +168,6 @@ public class GolpeJugador : MonoBehaviour
 
     void Update()
     {
-        if (sliderSuper != null)
-            sliderSuper.value = Mathf.Lerp(sliderSuper.value, sliderTarget, Time.deltaTime * sliderVelocidad);
-
         if (controlBloqueado) return;
 
         if (accionGolpe != null && accionGolpe.action.WasPressedThisFrame())
@@ -175,6 +178,17 @@ public class GolpeJugador : MonoBehaviour
         if (accionSuper != null && accionSuper.action.WasPressedThisFrame())
         {
             PulsarSuper();
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (sliderSuper != null)
+        {
+            sliderSuper.value = Mathf.Lerp(sliderSuper.value, sliderTarget, Time.deltaTime * sliderVelocidad);
+            sliderSuper.transform.localPosition = posSliderSuperOriginal;
+            sliderSuper.transform.localRotation = rotSliderSuperOriginal;
+            sliderSuper.transform.localScale = escalaSliderSuperOriginal;
         }
     }
 

@@ -25,6 +25,9 @@ public class VidaJugador : MonoBehaviour
     private float vidaMaxima;
     private float barraTarget;
     private float tiempoUltimoDaño;
+    private Vector3 posBarraOriginal;
+    private Quaternion rotBarraOriginal;
+    private Vector3 escalaBarraOriginal;
 
     void Awake()
     {
@@ -35,16 +38,28 @@ public class VidaJugador : MonoBehaviour
     {
         if (barraVida != null)
         {
+            posBarraOriginal = barraVida.transform.localPosition;
+            rotBarraOriginal = barraVida.transform.localRotation;
+            escalaBarraOriginal = barraVida.transform.localScale;
             barraVida.maxValue = vidaMaxima;
             barraVida.value = vida;
             barraTarget = vida;
+
+            Canvas canvas = barraVida.GetComponentInParent<Canvas>();
+            if (canvas != null)
+                Debug.Log($"[VidaJugador] Canvas render mode: {canvas.renderMode} (0=Overlay, 1=Camera, 2=WorldSpace)");
         }
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (barraVida != null)
+        {
             barraVida.value = Mathf.Lerp(barraVida.value, barraTarget, Time.deltaTime * velocidadBarra);
+            barraVida.transform.localPosition = posBarraOriginal;
+            barraVida.transform.localRotation = rotBarraOriginal;
+            barraVida.transform.localScale = escalaBarraOriginal;
+        }
     }
 
     public void RecibirDano(float dano)
